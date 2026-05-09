@@ -18,7 +18,8 @@
  * Block 4 will extend the inner form to seed the 6 default contexts.
  */
 
-import { workspaces, workspaceMembers, type Db } from '@k-os/db';
+import { workspaces, workspaceMembers, contexts, type Db } from '@k-os/db';
+import { DEFAULT_CONTEXTS } from '@k-os/core';
 
 export interface CreateWorkspaceForUserInput {
   userId: string;
@@ -52,6 +53,19 @@ export async function createWorkspaceForUserTx(
     userId,
     role: 'owner',
   });
+
+  // Seed the default contexts so the user lands with a populated catalog —
+  // matches the design's `--ctx-*` palette. Users can rename / recolour /
+  // reorder / add / remove via the contexts routes.
+  await tx.insert(contexts).values(
+    DEFAULT_CONTEXTS.map((c) => ({
+      workspaceId: workspace.id,
+      slug: c.slug,
+      label: c.label,
+      color: c.color,
+      sortOrder: c.sortOrder,
+    })),
+  );
 
   return workspace;
 }
