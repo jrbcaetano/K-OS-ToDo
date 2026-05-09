@@ -1,0 +1,29 @@
+{
+  "name": "k-os",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.0.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "format": "prettier --write .",
+    "db:generate": "pnpm --filter @k-os/db generate",
+    "db:migrate": "pnpm --filter @k-os/db migrate",
+    "db:studio": "pnpm --filter @k-os/db studio"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "eslint": "^9.15.0",
+    "prettier": "^3.4.0",
+    "turbo": "^2.3.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.16.0"
+  }
+}

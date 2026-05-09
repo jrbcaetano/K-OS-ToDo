@@ -1,0 +1,40 @@
+{
+  "name": "@k-os/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@k-os/api": "workspace:*",
+    "@k-os/core": "workspace:*",
+    "@k-os/db": "workspace:*",
+    "@k-os/ui": "workspace:*",
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-dropdown-menu": "^2.1.2",
+    "@radix-ui/react-popover": "^1.1.2",
+    "@radix-ui/react-tooltip": "^1.1.4",
+    "@tanstack/react-query": "^5.62.0",
+    "@tanstack/react-router": "^1.84.0",
+    "hono": "^4.6.13",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.53.2",
+    "zod": "^3.23.8",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@tanstack/router-vite-plugin": "^1.84.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.0",
+    "vite-plugin-pwa": "^0.21.1"
+  }
+}

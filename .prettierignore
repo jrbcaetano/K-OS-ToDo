@@ -1,0 +1,8 @@
+**/dist/**
+**/.turbo/**
+**/node_modules/**
+**/migrations/**
+**/.vercel/**
+design/**
+K-OS Vault/**
+pnpm-lock.yaml

@@ -1,0 +1,29 @@
+{
+  "name": "@k-os/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@k-os/ai": "workspace:*",
+    "@k-os/core": "workspace:*",
+    "@k-os/db": "workspace:*",
+    "arctic": "^2.2.1",
+    "hono": "^4.6.13",
+    "nodemailer": "^6.9.16",
+    "oslo": "^1.2.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.17",
+    "typescript": "^5.6.3"
+  }
+}
