@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+.vercel/
+.turbo/
+.cache/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude per-machine state (the global memory at ~/.claude/projects is separate and not in this repo)
+.claude/settings.local.json
+
+# Obsidian per-machine workspace state — the K-OS Vault/.obsidian/.gitignore takes care of files inside the vault,
+# but block any other vault that might be created accidentally.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspaces.json
+.obsidian/cache
+.obsidian/graph.json
+.obsidian/hotkeys.json
+
+# Redundant gzip archive of the design bundle — contents are already extracted alongside it
+design/north-star.bin
+
+# Test / coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# TypeScript
+*.tsbuildinfo

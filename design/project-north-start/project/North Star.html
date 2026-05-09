@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>North Star — Personal task manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="data.js"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="primitives.jsx"></script>
+<script type="text/babel" src="pickers.jsx"></script>
+<script type="text/babel" src="screens.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+
+
+
+
+
+
+const NAV = [
+{ group: "Workspace", items: [
+  { id: "today", name: "Today", icon: "today", count: 8, alert: 2 },
+  { id: "inbox", name: "Inbox", icon: "inboxAlt", count: 5 },
+  { id: "upcoming", name: "Upcoming", icon: "upcoming", count: 17 },
+  { id: "waiting", name: "Waiting", icon: "waiting", count: 8, alert: 2 },
+  { id: "review", name: "Review", icon: "review", count: 4 }]
+},
+{ group: "Organize", items: [
+  { id: "projects", name: "Projects", icon: "projects", count: 5 },
+  { id: "areas", name: "Areas", icon: "areas", count: 7 },
+  { id: "people", name: "People", icon: "people", count: 8 }]
+}];
+
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "sage",
+  "density": "compact",
+  "theme": "light"
+} /*EDITMODE-END*/;
+
+const ACCENT_MAP = {
+  sage: { accent: "#5a7a4a", soft: "#e2e8d6", ink: "#3d5430" },
+  amber: { accent: "#a8753a", soft: "#efe1c9", ink: "#7a5226" },
+  ink: { accent: "#2a2620", soft: "#dcd6c8", ink: "#2a2620" },
+  cobalt: { accent: "#3a6aa8", soft: "#d8e1ef", ink: "#284b7a" },
+  rust: { accent: "#a8543a", soft: "#efd6cc", ink: "#7a3d28" }
+};
+
+function App() {
+  const [tweaks, setTweak] = window.useTweaks ? useTweaks(TWEAK_DEFAULTS) : [TWEAK_DEFAULTS, () => {}];
+
+  const [view, setView] = React.useState("today");
+  const [qcOpen, setQcOpen] = React.useState(false);
+  const [taskOpen, setTaskOpen] = React.useState(null);
+
+  // Apply tweaks to root
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.density = tweaks.density;
+    root.dataset.theme = tweaks.theme;
+    const a = ACCENT_MAP[tweaks.accent] || ACCENT_MAP.sage;
+    root.style.setProperty("--accent", a.accent);
+    root.style.setProperty("--accent-soft", a.soft);
+    root.style.setProperty("--accent-ink", a.ink);
+  }, [tweaks]);
+
+  // Cmd-K
+  React.useEffect(() => {
+    const h = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {e.preventDefault();setQcOpen(true);}
+      if (e.key === "Escape") {setQcOpen(false);setTaskOpen(null);}
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, []);
+
+  const titleByView = {
+    today: "Today", inbox: "Inbox", upcoming: "Upcoming", waiting: "Waiting · Follow-ups",
+    review: "Review", projects: "Projects", areas: "Areas", people: "People"
+  };
+
+  const [areaOpen, setAreaOpen] = React.useState(null);
+
+  let screen;
+  if (taskOpen) screen = <TaskDetailScreen task={taskOpen} onBack={() => setTaskOpen(null)} />;else
+  if (areaOpen) screen = <AreaDetailScreen area={areaOpen} onBack={() => setAreaOpen(null)} onOpenTask={setTaskOpen} />;else
+  if (view === "today") screen = <TodayScreen onOpenTask={setTaskOpen} onQuickAdd={() => setQcOpen(true)} />;else
+  if (view === "inbox") screen = <InboxScreen onOpenTask={setTaskOpen} />;else
+  if (view === "upcoming") screen = <UpcomingScreen onOpenTask={setTaskOpen} />;else
+  if (view === "waiting") screen = <WaitingScreen onOpenTask={setTaskOpen} />;else
+  if (view === "people") screen = <PeopleScreen />;else
+  if (view === "projects") screen = <ProjectsScreen />;else
+  if (view === "areas") screen = <AreasScreen onOpenArea={setAreaOpen} />;else
+  if (view === "review") screen = <ReviewScreen />;
+
+  const isPeople = view === "people" && !taskOpen;
+
+  return (
+    <div className="app" data-screen-label="App">
+      <aside className="sidebar" style={{ backgroundColor: "rgb(239, 239, 239)" }}>
+        <div className="brand">
+          <span className="brand-mark" />
+          <span className="brand-name">ToDo</span>
+          <span className="brand-sub">v0.4</span>
+        </div>
+
+        <button className="btn btn-primary" style={{ width: "100%", justifyContent: "center", marginBottom: 6 }} onClick={() => setQcOpen(true)}>
+          <Icon name="plus" size={12} /> Quick add
+          <span className="kbd" style={{ marginLeft: "auto", color: "rgba(245,243,238,0.7)", borderColor: "rgba(245,243,238,0.2)", background: "transparent" }}>⌘K</span>
+        </button>
+        <button className="nav-item" style={{ marginBottom: 4 }}>
+          <span className="nav-icon"><Icon name="search" size={14} /></span>
+          <span>Search</span>
+          <span className="kbd" style={{ marginLeft: "auto" }}>⌘/</span>
+        </button>
+
+        {NAV.map((group) =>
+        <div className="nav-section" key={group.group}>
+            <div className="nav-section-label">{group.group}</div>
+            {group.items.map((it) =>
+          <button key={it.id} className={`nav-item ${view === it.id ? "active" : ""}`} onClick={() => {setView(it.id);setTaskOpen(null);}}>
+                <span className="nav-icon"><Icon name={it.icon} size={14} /></span>
+                <span>{it.name}</span>
+                <span className={`nav-count ${it.alert ? "alert" : ""}`}>
+                  {it.alert ? `${it.alert}·${it.count}` : it.count}
+                </span>
+              </button>
+          )}
+          </div>
+        )}
+
+        <div className="nav-section">
+          <div className="nav-section-label">Agents</div>
+          <button className="nav-item">
+            <span className="nav-icon"><Icon name="sparkles" size={14} /></span>
+            <span>Agent activity</span>
+            <span className="nav-count">3</span>
+          </button>
+          <button className="nav-item">
+            <span className="nav-icon"><Icon name="link" size={14} /></span>
+            <span>Integrations</span>
+          </button>
+        </div>
+
+        <div className="sidebar-footer">
+          <span className="avatar">JC</span>
+          <div className="user-info">
+            <div className="name">Joao Cardoso</div>
+            <div className="meta">Boxfusion · Praesto PT</div>
+          </div>
+          <button className="icon-btn"><Icon name="settings" size={13} /></button>
+        </div>
+      </aside>
+
+      <main className="main">
+        <header className="topbar" style={{ backgroundColor: "rgb(251, 251, 251)" }}>
+          <h1>{taskOpen ? "Task" : titleByView[view]}</h1>
+          <span className="crumb-meta">
+            {!taskOpen && view === "today" && "Thu 7 May 2026"}
+            {!taskOpen && view === "inbox" && "5 unprocessed"}
+            {!taskOpen && view === "waiting" && "8 open · 2 stale"}
+            {!taskOpen && view === "people" && "8 contacts"}
+            {!taskOpen && view === "projects" && "5 active"}
+          </span>
+          <div className="topbar-actions">
+            <button className="icon-btn"><Icon name="search" size={13} /> <span className="kbd">⌘/</span></button>
+            <button className="icon-btn"><Icon name="bell" size={13} /></button>
+            <button className="icon-btn"><Icon name="sparkles" size={13} /> Agents</button>
+          </div>
+        </header>
+        <div className={`content ${isPeople ? "" : ""}`} style={{ ...(isPeople ? { padding: 0 } : {}), color: "rgb(0, 0, 0)" }}>
+          {screen}
+        </div>
+      </main>
+
+      {qcOpen && <QuickCapture onClose={() => setQcOpen(false)} />}
+
+      {window.TweaksPanel &&
+      <TweaksPanel title="Tweaks" defaultOpen={false}>
+          <TweakSection title="Theme">
+            <TweakRadio label="Mode" value={tweaks.theme} options={[{ value: "light", label: "Light" }, { value: "dark", label: "Dark" }]} onChange={(v) => setTweak("theme", v)} />
+          </TweakSection>
+          <TweakSection title="Accent">
+            <TweakColor
+            label="Accent color"
+            value={ACCENT_MAP[tweaks.accent].accent}
+            options={Object.values(ACCENT_MAP).map((x) => x.accent)}
+            onChange={(v) => {
+              const k = Object.keys(ACCENT_MAP).find((k) => ACCENT_MAP[k].accent === v);
+              setTweak("accent", k || "sage");
+            }} />
+          
+          </TweakSection>
+          <TweakSection title="Density">
+            <TweakRadio label="List density" value={tweaks.density} options={[{ value: "compact", label: "Compact" }, { value: "comfortable", label: "Comfy" }, { value: "spacious", label: "Calm" }]} onChange={(v) => setTweak("density", v)} />
+          </TweakSection>
+          <TweakSection title="Demo">
+            <TweakButton onClick={() => setQcOpen(true)}>Open Quick Capture</TweakButton>
+            <TweakButton onClick={() => setView("today")}>Jump to Today</TweakButton>
+            <TweakButton onClick={() => setTaskOpen({ title: "Review Cahil's draft self-review and send notes back", description: "Cahil sent his draft Monday. Need to read carefully, leave inline comments, and flag any leveling/title questions before our 1:1 on Thursday.", status: "next", priority: "important", ctx: "boxfusion", project: "Appraisals 2026 H1", person: "cahil", source: "Meeting note · 1:1 Andy" })}>Open task detail</TweakButton>
+          </TweakSection>
+        </TweaksPanel>
+      }
+    </div>);
+
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
