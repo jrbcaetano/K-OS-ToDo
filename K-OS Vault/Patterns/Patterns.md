@@ -65,4 +65,5 @@ Edge cases or situations where the pattern doesn't apply.
 
 ## Index
 
-_(Patterns will be added here as they emerge during implementation.)_
+### Ops
+- [[database-branch-strategy]] — production / dev / test branches on Neon; dev → production migration promotion

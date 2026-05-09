@@ -63,6 +63,20 @@ pnpm db:migrate
 pnpm dev
 ```
 
+### Database environments (Neon branches)
+
+K-OS uses **separate Neon branches per environment** so dev work never touches live data:
+
+| Branch | Used by | Notes |
+|---|---|---|
+| `production` | Vercel **Production** deployment | Live data; never run dev migrations against it directly |
+| `dev` | Local `.env` + Vercel **Preview** | Branched from `production`; safe to break |
+| `test` | CI (optional at MVP) | Branched from `production`; reset between runs |
+
+Schema changes are developed on `dev`, then promoted to `production` once merged. Reset `dev` from parent in the Neon console when it gets stale. See [`K-OS Vault/Patterns/database-branch-strategy.md`](K-OS%20Vault/Patterns/database-branch-strategy.md) for the full workflow.
+
+Make sure `DATABASE_URL` in `.env` points at the **dev** branch's pooled connection string (host ends with `-pooler`).
+
 ### Common commands
 
 | Command | What it does |
