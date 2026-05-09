@@ -26,7 +26,7 @@ import {
   unique,
   index,
   check,
-  AnyPgColumn,
+  type AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 import {
   TASK_STATUSES,

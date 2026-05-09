@@ -17,6 +17,7 @@
     "@k-os/core": "workspace:*",
     "@k-os/db": "workspace:*",
     "arctic": "^2.2.1",
+    "drizzle-orm": "^0.36.4",
     "hono": "^4.6.13",
     "nodemailer": "^6.9.16",
     "oslo": "^1.2.1",

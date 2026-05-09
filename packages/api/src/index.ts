@@ -14,6 +14,7 @@ import peopleRoutes from './routes/people';
 import contextsRoutes from './routes/contexts';
 import tagsRoutes from './routes/tags';
 import aiRoutes from './routes/ai';
+import { requireAuth, type AuthVariables } from './middleware/auth';
 
 /**
  * The K-OS API. Hono app, framework-agnostic.
@@ -22,7 +23,7 @@ import aiRoutes from './routes/ai';
  * Can also be served standalone (Node, Bun, Cloudflare Workers — though
  * Workers requires swapping nodemailer and oslo for Web-Crypto-only equivalents).
  */
-export const app = new Hono().basePath('/api');
+export const app = new Hono<{ Variables: AuthVariables }>().basePath('/api');
 
 app.use('*', logger());
 app.use('*', cors());
@@ -30,11 +31,30 @@ app.use('*', cors());
 app.get('/', (c) => c.json({ name: 'k-os-api', status: 'ok' }));
 app.get('/health', (c) => c.json({ ok: true }));
 
-// Auth
+// Auth — public; cannot require a session, since these routes mint sessions.
 app.route('/auth/password', passwordRoutes);
 app.route('/auth/magic-link', magicLinkRoutes);
 app.route('/auth/oauth/google', googleOAuthRoutes);
 app.route('/auth/session', sessionRoutes);
+
+// Every domain route requires a valid session. The middleware loads the user
+// and active workspace onto the Hono context — see middleware/auth.ts.
+// Hono's `/tasks/*` matches `/tasks/anything` but not `/tasks` alone, so we
+// register both patterns for each protected mount.
+const PROTECTED_PREFIXES = [
+  '/tasks',
+  '/inbox',
+  '/projects',
+  '/areas',
+  '/people',
+  '/contexts',
+  '/tags',
+  '/ai',
+] as const;
+for (const prefix of PROTECTED_PREFIXES) {
+  app.use(prefix, requireAuth);
+  app.use(`${prefix}/*`, requireAuth);
+}
 
 // Domain
 app.route('/tasks', tasksRoutes);

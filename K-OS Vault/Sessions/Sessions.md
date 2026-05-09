@@ -69,6 +69,7 @@ Free-form notes from the session that don't fit elsewhere.
 
 _Newest first._
 
+- 2026-05-09 — [[2026-05-09 - block-1-sessions-workspace-auth-middleware|Block 1 — Sessions + workspace + auth middleware]]
 - 2026-05-09 — [[2026-05-09 - scaffolding-and-branch-strategy|Scaffolding — monorepo skeleton + branch strategy]]
 - 2026-05-09 — [[2026-05-09 - schema-design|Schema design — full data model locked]]
 - 2026-05-09 — [[2026-05-09 - initial-planning-architecture-and-stack|Initial planning — architecture, stack, and project bootstrap]]

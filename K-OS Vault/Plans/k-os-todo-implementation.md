@@ -900,7 +900,7 @@ Update this table as blocks ship.
 
 | Block | Title | Status | Session note |
 |---|---|---|---|
-| 1 | Sessions + workspace + auth middleware | ☐ |  |
+| 1 | Sessions + workspace + auth middleware | ☑ | [[2026-05-09 - block-1-sessions-workspace-auth-middleware]] |
 | 2 | Password + magic link auth | ☐ |  |
 | 3 | Google OAuth + account linking | ☐ |  |
 | 4 | Catalog CRUD + workspace seeding | ☐ |  |
