@@ -904,7 +904,7 @@ Update this table as blocks ship.
 | 2 | Password + magic link auth | ☑ | [[2026-05-09 - block-2-password-and-magic-link-auth]] |
 | 3 | Google OAuth + account linking | ☑ | [[2026-05-09 - block-3-google-oauth-and-account-linking]] |
 | 4 | Catalog CRUD + workspace seeding | ☑ | [[2026-05-09 - block-4-catalog-crud-and-workspace-seeding]] |
-| 5 | People + Projects + Areas CRUD | ☐ |  |
+| 5 | People + Projects + Areas CRUD | ☑ | [[2026-05-09 - block-5-people-projects-areas-crud]] |
 | 6 | Tasks CRUD + activity log | ☐ |  |
 | 7 | Inbox + recurring task materialisation | ☐ |  |
 | 8 | Design system primitives port | ☐ |  |

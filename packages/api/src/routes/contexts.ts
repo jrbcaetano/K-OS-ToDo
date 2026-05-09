@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { contexts, getDb } from '@k-os/db';
 import type { AuthVariables } from '../middleware/auth';
 import { getWorkspaceId } from '../middleware/workspace';
+import { stripUndefined } from './_helpers';
 
 const app = new Hono<{ Variables: AuthVariables }>();
 
@@ -83,13 +84,7 @@ app.patch('/:id', async (c) => {
   if (!parsed.success) {
     return c.json({ error: 'invalid_body', issues: parsed.error.issues }, 400);
   }
-  // Strip undefined keys — `exactOptionalPropertyTypes` rejects them in
-  // Drizzle's `.set()`, and Zod's `.optional()` produces them when absent.
-  const patch: { slug?: string; label?: string; color?: string; sortOrder?: number } = {};
-  if (parsed.data.slug !== undefined) patch.slug = parsed.data.slug;
-  if (parsed.data.label !== undefined) patch.label = parsed.data.label;
-  if (parsed.data.color !== undefined) patch.color = parsed.data.color;
-  if (parsed.data.sortOrder !== undefined) patch.sortOrder = parsed.data.sortOrder;
+  const patch = stripUndefined(parsed.data);
   if (Object.keys(patch).length === 0) {
     return c.json({ error: 'empty_patch' }, 400);
   }
