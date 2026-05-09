@@ -27,3 +27,14 @@ export type { SectionHeadProps } from './components/SectionHead';
 
 export { TaskRow } from './components/TaskRow';
 export type { TaskRowProps, TaskRowModel } from './components/TaskRow';
+
+export { TweaksPanel } from './components/TweaksPanel';
+
+export { useTweaks, TWEAK_DEFAULTS } from './hooks/useTweaks';
+export type { Tweaks, Theme, Density, Accent } from './hooks/useTweaks';
+
+export { AppShell } from './layouts/AppShell';
+export type { AppShellProps } from './layouts/AppShell';
+
+export { Sidebar } from './layouts/Sidebar';
+export type { SidebarProps, SidebarUser, SidebarItemRenderProps } from './layouts/Sidebar';

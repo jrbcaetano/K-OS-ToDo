@@ -179,6 +179,13 @@ importers:
         version: 5.9.3
 
   packages/ui:
+    dependencies:
+      '@k-os/core':
+        specifier: workspace:*
+        version: link:../core
+      '@radix-ui/react-popover':
+        specifier: ^1.1.2
+        version: 1.1.15(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
     devDependencies:
       '@types/react':
         specifier: ^19.0.0

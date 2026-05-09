@@ -1,0 +1,126 @@
+.sidebar {
+  background: var(--paper-2);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  padding: 14px 10px 10px;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 8px 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.brandMark {
+  width: 18px;
+  height: 18px;
+  background: var(--ink);
+  border-radius: 4px;
+  position: relative;
+  flex-shrink: 0;
+}
+.brandMark::after {
+  content: '';
+  position: absolute;
+  inset: 4px 4px auto auto;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.brandName {
+  font-size: 13.5px;
+}
+.brandSub {
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-left: auto;
+  font-family: var(--font-mono);
+}
+
+.section {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.sectionLabel {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-4);
+  padding: 6px 10px 4px;
+  font-weight: 500;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  cursor: pointer;
+  position: relative;
+  font-size: 13px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  width: 100%;
+  font: inherit;
+}
+.item:hover {
+  background: var(--paper-3);
+  color: var(--ink);
+}
+.itemActive {
+  background: var(--paper-3);
+  color: var(--ink);
+}
+.itemActive::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+.icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+  flex-shrink: 0;
+  display: inline-flex;
+}
+.itemActive .icon {
+  opacity: 1;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px 4px;
+}
+.footerInfo {
+  font-size: 12px;
+  line-height: 1.2;
+  flex: 1;
+  min-width: 0;
+}
+.footerName {
+  font-weight: 500;
+}
+.footerMeta {
+  color: var(--ink-3);
+  font-size: 10.5px;
+}

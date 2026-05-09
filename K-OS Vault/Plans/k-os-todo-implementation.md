@@ -908,7 +908,7 @@ Update this table as blocks ship.
 | 6 | Tasks CRUD + activity log | ☑ | [[2026-05-09 - block-6-tasks-crud-and-activity-log]] |
 | 7 | Inbox + recurring task materialisation | ☑ | [[2026-05-09 - block-7-inbox-and-recurring-materialisation]] |
 | 8 | Design system primitives port | ☑ | [[2026-05-09 - block-8-design-system-primitives-port]] |
-| 9 | App shell + tweaks panel | ☐ |  |
+| 9 | App shell + tweaks panel | ☑ | [[2026-05-09 - block-9-app-shell-and-tweaks-panel]] |
 | 10 | Today screen | ☐ |  |
 | 11 | Inbox + Quick Capture | ☐ |  |
 | 12 | Upcoming, Waiting, Review screens | ☐ |  |

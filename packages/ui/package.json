@@ -16,6 +16,10 @@
   "peerDependencies": {
     "react": "^19.0.0"
   },
+  "dependencies": {
+    "@k-os/core": "workspace:*",
+    "@radix-ui/react-popover": "^1.1.2"
+  },
   "devDependencies": {
     "@types/react": "^19.0.0",
     "react": "^19.0.0",
