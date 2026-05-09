@@ -14,6 +14,7 @@ import peopleRoutes from './routes/people';
 import contextsRoutes from './routes/contexts';
 import tagsRoutes from './routes/tags';
 import aiRoutes from './routes/ai';
+import adminRoutes from './routes/admin';
 import { requireAuth, type AuthVariables } from './middleware/auth';
 
 /**
@@ -50,6 +51,7 @@ const PROTECTED_PREFIXES = [
   '/contexts',
   '/tags',
   '/ai',
+  '/admin',
 ] as const;
 for (const prefix of PROTECTED_PREFIXES) {
   app.use(prefix, requireAuth);
@@ -67,5 +69,8 @@ app.route('/tags', tagsRoutes);
 
 // AI
 app.route('/ai', aiRoutes);
+
+// Admin (user-triggered ops)
+app.route('/admin', adminRoutes);
 
 export type AppType = typeof app;
