@@ -69,4 +69,5 @@ Free-form notes from the session that don't fit elsewhere.
 
 _Newest first._
 
+- 2026-05-09 — [[2026-05-09 - schema-design|Schema design — full data model locked]]
 - 2026-05-09 — [[2026-05-09 - initial-planning-architecture-and-stack|Initial planning — architecture, stack, and project bootstrap]]
