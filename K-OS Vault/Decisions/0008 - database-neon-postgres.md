@@ -17,14 +17,14 @@ K-OS needs a database that satisfies four constraints simultaneously:
 
 1. **Free tier viable** for personal use indefinitely (single user, sporadic load).
 2. **Portable** — explicitly no vendor lock-in. The user must be able to migrate by changing a connection string.
-3. **Real RDBMS** — the schema is workspace-scoped (see [[0003 - workspace-scoped-schema-for-multi-user-readiness]] _(pending)_) with foreign keys, transactions, and eventual graph-shaped queries (entity-link model for cross-module connections in future K-OS modules).
+3. **Real RDBMS** — the schema is workspace-scoped (see [[0003 - workspace-scoped-schema-for-multi-user-readiness]]) with foreign keys, transactions, and eventual graph-shaped queries (entity-link model for cross-module connections in future K-OS modules).
 4. **Awake-on-demand** — sporadic personal use (a daily-driver app you might not open for a week) shouldn't require manual unpause.
 
 ## Decision
 
 **Neon Postgres**, free tier to start; **Neon Launch ($19/mo)** when going commercial.
 
-Drizzle (see [[0010 - orm-drizzle]] _(pending)_) connects via the standard Postgres connection string. Migrations are SQL files versioned in `packages/db/migrations/`.
+Drizzle (see [[0010 - orm-drizzle]]) connects via the standard Postgres connection string. Migrations are SQL files versioned in `packages/db/migrations/`.
 
 ## Alternatives considered
 
@@ -49,15 +49,12 @@ Drizzle (see [[0010 - orm-drizzle]] _(pending)_) connects via the standard Postg
   - **Branching**: Neon allows DB branches (like git branches). Useful for migration testing later.
   - Standard Postgres dialect — Drizzle ORM, pgAdmin, psql all work as expected
 - **Negative**:
-  - 0.5 GB storage cap on free tier — fine indefinitely for K-OS data, but uploads must go elsewhere (see [[0012 - storage-cloudflare-r2-deferred]] _(pending)_)
+  - 0.5 GB storage cap on free tier — fine indefinitely for K-OS data, but uploads must go elsewhere (see [[0012 - storage-cloudflare-r2-deferred]])
   - Connection pooling matters in serverless — Neon provides a pooled connection string; must use it
 - **Neutral**:
   - Vendor: Neon. Switching to another Postgres host is a connection-string change + `pg_dump | pg_restore`.
 
 ## References
 
-- [[0009 - api-hono-on-vercel-serverless]] _(pending)_
-- [[0010 - orm-drizzle]] _(pending)_
-- [[0011 - hosting-vercel-plus-neon-free-tier]]
-- [[0003 - workspace-scoped-schema-for-multi-user-readiness]] _(pending)_
-- [Neon docs](https://neon.com/docs)
+- [[0009 - api-hono-on-vercel-serverless]]- [[0010 - orm-drizzle]]- [[0011 - hosting-vercel-plus-neon-free-tier]]
+- [[0003 - workspace-scoped-schema-for-multi-user-readiness]]- [Neon docs](https://neon.com/docs)

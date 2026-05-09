@@ -28,7 +28,7 @@ K-OS needs a deployment story for both the static web bundle and the Hono API. C
 | Web hosting | **Vercel Hobby** | Vercel Pro ($20/mo) |
 | API hosting | Vercel serverless functions (same project) | Included in Pro |
 | Database | **Neon Free** (see [[0008 - database-neon-postgres]]) | Neon Launch ($19/mo) |
-| Storage | Cloudflare R2 free 10 GB (deferred until file uploads land — see [[0012 - storage-cloudflare-r2-deferred]] _(pending)_) | $0.015/GB/mo |
+| Storage | Cloudflare R2 free 10 GB (deferred until file uploads land — see [[0012 - storage-cloudflare-r2-deferred]]) | $0.015/GB/mo |
 | AI | Anthropic API (pay-as-you-go from day one) | Continues |
 | CI | GitHub Actions free tier | Continues |
 
@@ -63,7 +63,5 @@ Total step-up cost when going commercial: **~$40/mo + Anthropic usage**.
 ## References
 
 - [[0008 - database-neon-postgres]]
-- [[0009 - api-hono-on-vercel-serverless]] _(pending)_
-- [[0012 - storage-cloudflare-r2-deferred]] _(pending)_
-- [Vercel pricing](https://vercel.com/pricing)
+- [[0009 - api-hono-on-vercel-serverless]]- [[0012 - storage-cloudflare-r2-deferred]]- [Vercel pricing](https://vercel.com/pricing)
 - [Neon pricing](https://neon.com/pricing)

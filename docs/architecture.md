@@ -57,8 +57,7 @@ Routes inside `apps/web` are namespaced (`/tasks/...`, future `/planner/...`, `/
 
 The styling choice is the most consequential — the design uses CSS custom properties switched by `[data-theme]` and `[data-density]` attribute selectors, with the user actively editing tokens. Tailwind/shadcn would fight this pattern. See ADR for full reasoning.
 
-📎 ADRs: [[0004 - styling-vanilla-css-modules-and-radix]], [[0006 - routing-tanstack-router]] _(pending)_, [[0005 - state-tanstack-query-and-zustand]] _(pending)_, [[0007 - mobile-responsive-pwa-capacitor-deferred]] _(pending)_
-
+📎 ADRs: [[0004 - styling-vanilla-css-modules-and-radix]], [[0006 - routing-tanstack-router]] [[0005 - state-tanstack-query-and-zustand]] [[0007 - mobile-responsive-pwa-capacitor-deferred]]
 ## Backend & data
 
 | Concern | Choice |
@@ -84,8 +83,7 @@ The styling choice is the most consequential — the design uses CSS custom prop
   - **Activity event** — append-only log per task
 - Auth tables (`users`, `sessions`, `oauth_accounts`, `verification_tokens`) layered on the same schema.
 
-📎 ADRs: [[0008 - database-neon-postgres]], [[0010 - orm-drizzle]] _(pending)_, [[0009 - api-hono-on-vercel-serverless]] _(pending)_, [[0003 - workspace-scoped-schema-for-multi-user-readiness]] _(pending)_
-
+📎 ADRs: [[0008 - database-neon-postgres]], [[0010 - orm-drizzle]] [[0009 - api-hono-on-vercel-serverless]] [[0003 - workspace-scoped-schema-for-multi-user-readiness]]
 ## Auth
 
 Built directly on **`oslo`** (crypto, password hashing, tokens) and **`arctic`** (OAuth clients). Not Lucia — Lucia v3 is in maintenance mode; ~150 LOC of session code is preferable to a frozen dependency.
@@ -102,8 +100,7 @@ Sessions are opaque tokens in a `sessions` table — server-validated per reques
 
 **Rate limiting** on login via Vercel Middleware (per-IP throttle).
 
-📎 ADRs: [[0013 - auth-on-oslo-and-arctic-not-lucia]], [[0014 - auth-methods-password-magic-link-google-oauth]] _(pending)_, [[0015 - email-own-smtp-via-nodemailer]] _(pending)_, [[0016 - account-linking-auto-on-verified-email]] _(pending)_, [[0017 - sessions-not-jwts]] _(pending)_
-
+📎 ADRs: [[0013 - auth-on-oslo-and-arctic-not-lucia]], [[0014 - auth-methods-password-magic-link-google-oauth]] [[0015 - email-own-smtp-via-nodemailer]] [[0016 - account-linking-auto-on-verified-email]] [[0017 - sessions-not-jwts]]
 ## AI
 
 The `packages/ai` package wraps Anthropic SDK calls, invoked from Hono routes.
@@ -117,8 +114,7 @@ The `packages/ai` package wraps Anthropic SDK calls, invoked from Hono routes.
 
 The design embeds AI structurally — NL parse runs silently on every quick capture, agent suggestion cards appear on detail pages, agent activity is logged in review. AI is part of MVP, not phase 3.
 
-📎 ADRs: [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]] _(pending)_
-
+📎 ADRs: [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]]
 ## Mobile
 
 Single responsive PWA with breakpoint-driven layout modes:
@@ -128,8 +124,7 @@ Single responsive PWA with breakpoint-driven layout modes:
 
 Native (Capacitor wrap of the same web app) is deferred until a real native need surfaces — push notifications, share-from-other-app, app-store distribution. No separate React Native client; that overhead isn't justified for a single-user product.
 
-📎 ADRs: [[0007 - mobile-responsive-pwa-capacitor-deferred]] _(pending)_
-
+📎 ADRs: [[0007 - mobile-responsive-pwa-capacitor-deferred]]
 ## Hosting & ops
 
 | Concern | Free-tier choice | Step-up (when live) |
@@ -153,8 +148,7 @@ Total step-up cost when going commercial: ~**$40/mo** + Anthropic usage.
 - Notes are Markdown; Obsidian-flavored where useful (callouts, wikilinks, properties).
 - See `CLAUDE.md` at the repo root for the full convention spec.
 
-📎 ADRs: [[0019 - obsidian-vault-as-knowledge-base]] _(pending)_
-
+📎 ADRs: [[0019 - obsidian-vault-as-knowledge-base]]
 ## What's not decided
 
 - **Schema specifics** — recurring-task rule shape (RRULE vs simpler), activity-log granularity, `Source` typing, separation of `inbox_items` from `tasks`.

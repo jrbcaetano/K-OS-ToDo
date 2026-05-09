@@ -17,7 +17,7 @@ The first K-OS app (`apps/web`) hosts the shell + the Tasks module, with future 
 - The Project North Star design is built as **React JSX prototypes** (`primitives.jsx`, `screens.jsx`, `pickers.jsx`).
 - Heavy client-side state, rich keyboard interactions, dense UI updates — this is an **app**, not a content site.
 - **No SEO needs** — single-user productivity tool, gated behind auth.
-- Must compile to a static bundle deployable on Vercel; the Hono API runs separately as serverless functions (see [[0009 - api-hono-on-vercel-serverless]] _(pending)_).
+- Must compile to a static bundle deployable on Vercel; the Hono API runs separately as serverless functions (see [[0009 - api-hono-on-vercel-serverless]]).
 - TypeScript end-to-end.
 
 ## Decision
@@ -42,15 +42,11 @@ The first K-OS app (`apps/web`) hosts the shell + the Tasks module, with future 
   - Direct port of `primitives.jsx` and `screens.jsx` to `.tsx`
   - Vite's plugin ecosystem (PWA, env, image optimisation) is mature
 - **Negative**:
-  - No file-system routing built in — addressed by [[0006 - routing-tanstack-router]] _(pending)_
-  - No built-in API layer — addressed by [[0009 - api-hono-on-vercel-serverless]] _(pending)_
-- **Neutral**:
+  - No file-system routing built in — addressed by [[0006 - routing-tanstack-router]]  - No built-in API layer — addressed by [[0009 - api-hono-on-vercel-serverless]]- **Neutral**:
   - SPA routing means initial paint is gated on JS download; with auth-gated app this is fine
 
 ## References
 
 - [[0001 - monorepo-with-pnpm-and-turborepo]]
-- [[0006 - routing-tanstack-router]] _(pending)_
-- [[0009 - api-hono-on-vercel-serverless]] _(pending)_
-- design/project-north-start/project/screens.jsx (in repo)
+- [[0006 - routing-tanstack-router]]- [[0009 - api-hono-on-vercel-serverless]]- design/project-north-start/project/screens.jsx (in repo)
 - [Vite docs](https://vitejs.dev/)

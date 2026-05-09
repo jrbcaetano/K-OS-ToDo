@@ -14,7 +14,7 @@ tags:
 
 K-OS needs an auth layer that:
 - Supports **multiple methods on a single user model**: username + password, magic link, Google OAuth (other providers later).
-- Owns its sessions (no JWT, no third-party identity provider tokens) — see [[0017 - sessions-not-jwts]] _(pending)_.
+- Owns its sessions (no JWT, no third-party identity provider tokens) — see [[0017 - sessions-not-jwts]].
 - Stores everything in our own Postgres tables for portability.
 - Doesn't lock us into a specific framework or runtime.
 - Doesn't depend on a specific auth-as-a-service vendor.
@@ -58,7 +58,7 @@ Sessions are **not JWTs**. Sessions are opaque random tokens (stored hashed in `
 
 ## Implementation notes (for future reference)
 
-The auth tables we need (full schema lives in [[Schema design session]] _(pending)_):
+The auth tables we need (full schema lives in [[Schema design session]]):
 
 ```
 users(id, email, email_verified_at?, password_hash?, created_at, ...)
@@ -73,12 +73,7 @@ The Copenhagen Book is the spec — implement the session validation, password h
 
 ## References
 
-- [[0014 - auth-methods-password-magic-link-google-oauth]] _(pending)_
-- [[0015 - email-own-smtp-via-nodemailer]] _(pending)_
-- [[0016 - account-linking-auto-on-verified-email]] _(pending)_
-- [[0017 - sessions-not-jwts]] _(pending)_
-- [[0009 - api-hono-on-vercel-serverless]] _(pending)_
-- [Copenhagen Book](https://thecopenhagenbook.com/)
+- [[0014 - auth-methods-password-magic-link-google-oauth]]- [[0015 - email-own-smtp-via-nodemailer]]- [[0016 - account-linking-auto-on-verified-email]]- [[0017 - sessions-not-jwts]]- [[0009 - api-hono-on-vercel-serverless]]- [Copenhagen Book](https://thecopenhagenbook.com/)
 - [oslo](https://oslojs.dev/)
 - [arctic](https://arcticjs.dev/)
 - [Lucia v3 maintenance announcement](https://github.com/lucia-auth/lucia/discussions/1714)

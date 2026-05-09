@@ -71,30 +71,30 @@ _Sequence is global. ADRs are append-only — to revise, write a new ADR with `s
 ### Project shape
 - [[0001 - monorepo-with-pnpm-and-turborepo]] — pnpm workspaces + Turborepo
 - [[0002 - first-app-vite-react-typescript]] — React + Vite + TS for `apps/web`
-- [[0003 - workspace-scoped-schema-for-multi-user-readiness]] — _pending_
+- [[0003 - workspace-scoped-schema-for-multi-user-readiness]] — `workspace_id` on every domain row from day one
 
 ### Frontend
 - [[0004 - styling-vanilla-css-modules-and-radix]] — vanilla CSS Modules + tokens.css + Radix; no Tailwind/shadcn
-- [[0005 - state-tanstack-query-and-zustand]] — _pending_
-- [[0006 - routing-tanstack-router]] — _pending_
-- [[0007 - mobile-responsive-pwa-capacitor-deferred]] — _pending_
+- [[0005 - state-tanstack-query-and-zustand]] — TanStack Query for server state, Zustand for UI state
+- [[0006 - routing-tanstack-router]] — type-safe SPA routing with validated search params
+- [[0007 - mobile-responsive-pwa-capacitor-deferred]] — single responsive PWA, native wrap deferred
 
 ### Backend & data
 - [[0008 - database-neon-postgres]] — Neon Postgres (free → Launch)
-- [[0009 - api-hono-on-vercel-serverless]] — _pending_
-- [[0010 - orm-drizzle]] — _pending_
+- [[0009 - api-hono-on-vercel-serverless]] — Hono on Vercel Node serverless
+- [[0010 - orm-drizzle]] — Drizzle ORM + Drizzle Kit for typed schema and SQL migrations
 - [[0011 - hosting-vercel-plus-neon-free-tier]] — Vercel + Neon free tier; ~$40/mo step-up
-- [[0012 - storage-cloudflare-r2-deferred]] — _pending_
+- [[0012 - storage-cloudflare-r2-deferred]] — Cloudflare R2 when needed; deferred until uploads land
 
 ### Auth
 - [[0013 - auth-on-oslo-and-arctic-not-lucia]] — own session code on `oslo`+`arctic`; not Lucia
-- [[0014 - auth-methods-password-magic-link-google-oauth]] — _pending_
-- [[0015 - email-own-smtp-via-nodemailer]] — _pending_
-- [[0016 - account-linking-auto-on-verified-email]] — _pending_
-- [[0017 - sessions-not-jwts]] — _pending_
+- [[0014 - auth-methods-password-magic-link-google-oauth]] — three methods on one user model
+- [[0015 - email-own-smtp-via-nodemailer]] — user's own SMTP via `nodemailer`; SPF/DKIM/DMARC required
+- [[0016 - account-linking-auto-on-verified-email]] — auto-link OAuth to existing user when email is verified
+- [[0017 - sessions-not-jwts]] — opaque session tokens in `sessions` table, revocable
 
 ### AI
-- [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]] — _pending_
+- [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]] — Anthropic SDK; Haiku 4.5 + Sonnet 4.6; caching from day one
 
 ### Knowledge base & process
-- [[0019 - obsidian-vault-as-knowledge-base]] — _pending_
+- [[0019 - obsidian-vault-as-knowledge-base]] — Obsidian vault at `K-OS Vault/`; ADRs / Patterns / Sessions
