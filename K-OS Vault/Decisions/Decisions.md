@@ -66,4 +66,35 @@ What did we decide?
 
 ## Index
 
-_(Decisions will be added here as they are written. The locked decisions captured during the planning phase live in project memory at `.claude/projects/.../memory/decision_stack_and_hosting.md` and should be ported into ADR notes here when convenient.)_
+_Sequence is global. ADRs are append-only — to revise, write a new ADR with `supersedes:` and update this list._
+
+### Project shape
+- [[0001 - monorepo-with-pnpm-and-turborepo]] — pnpm workspaces + Turborepo
+- [[0002 - first-app-vite-react-typescript]] — React + Vite + TS for `apps/web`
+- [[0003 - workspace-scoped-schema-for-multi-user-readiness]] — _pending_
+
+### Frontend
+- [[0004 - styling-vanilla-css-modules-and-radix]] — vanilla CSS Modules + tokens.css + Radix; no Tailwind/shadcn
+- [[0005 - state-tanstack-query-and-zustand]] — _pending_
+- [[0006 - routing-tanstack-router]] — _pending_
+- [[0007 - mobile-responsive-pwa-capacitor-deferred]] — _pending_
+
+### Backend & data
+- [[0008 - database-neon-postgres]] — Neon Postgres (free → Launch)
+- [[0009 - api-hono-on-vercel-serverless]] — _pending_
+- [[0010 - orm-drizzle]] — _pending_
+- [[0011 - hosting-vercel-plus-neon-free-tier]] — Vercel + Neon free tier; ~$40/mo step-up
+- [[0012 - storage-cloudflare-r2-deferred]] — _pending_
+
+### Auth
+- [[0013 - auth-on-oslo-and-arctic-not-lucia]] — own session code on `oslo`+`arctic`; not Lucia
+- [[0014 - auth-methods-password-magic-link-google-oauth]] — _pending_
+- [[0015 - email-own-smtp-via-nodemailer]] — _pending_
+- [[0016 - account-linking-auto-on-verified-email]] — _pending_
+- [[0017 - sessions-not-jwts]] — _pending_
+
+### AI
+- [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]] — _pending_
+
+### Knowledge base & process
+- [[0019 - obsidian-vault-as-knowledge-base]] — _pending_
