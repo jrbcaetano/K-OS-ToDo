@@ -1,0 +1,39 @@
+.status {
+  font-size: 10.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  color: var(--st-color, var(--ink-4));
+}
+.status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 1.5px;
+  background: var(--st-color, var(--ink-4));
+}
+.next {
+  --st-color: var(--status-next);
+}
+.waiting {
+  --st-color: var(--status-waiting);
+}
+.delegated {
+  --st-color: var(--status-delegated);
+}
+.blocked {
+  --st-color: var(--status-blocked);
+}
+.done {
+  --st-color: var(--status-done);
+}
+.someday {
+  --st-color: var(--status-someday);
+}
+.scheduled {
+  --st-color: var(--ink-3);
+}
+.inbox {
+  --st-color: var(--ink-3);
+}

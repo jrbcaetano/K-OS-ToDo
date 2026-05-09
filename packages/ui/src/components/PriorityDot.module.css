@@ -1,0 +1,19 @@
+.dot {
+  width: 4px;
+  height: 14px;
+  border-radius: 1px;
+  display: inline-block;
+  background: var(--pri-color, transparent);
+}
+.critical {
+  --pri-color: var(--pri-critical);
+}
+.important {
+  --pri-color: var(--pri-important);
+}
+.routine {
+  --pri-color: transparent;
+}
+.low {
+  --pri-color: transparent;
+}

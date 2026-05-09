@@ -1,0 +1,13 @@
+.chip {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-3);
+  font-feature-settings: 'tnum';
+}
+.overdue {
+  color: var(--pri-critical);
+}
+.today {
+  color: var(--accent-ink);
+  font-weight: 500;
+}

@@ -907,7 +907,7 @@ Update this table as blocks ship.
 | 5 | People + Projects + Areas CRUD | ☑ | [[2026-05-09 - block-5-people-projects-areas-crud]] |
 | 6 | Tasks CRUD + activity log | ☑ | [[2026-05-09 - block-6-tasks-crud-and-activity-log]] |
 | 7 | Inbox + recurring task materialisation | ☑ | [[2026-05-09 - block-7-inbox-and-recurring-materialisation]] |
-| 8 | Design system primitives port | ☐ |  |
+| 8 | Design system primitives port | ☑ | [[2026-05-09 - block-8-design-system-primitives-port]] |
 | 9 | App shell + tweaks panel | ☐ |  |
 | 10 | Today screen | ☐ |  |
 | 11 | Inbox + Quick Capture | ☐ |  |

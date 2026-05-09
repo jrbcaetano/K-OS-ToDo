@@ -1,7 +1,29 @@
 // Design tokens are exported as a CSS file:
 //   import '@k-os/ui/tokens.css';
-//
-// Components will be added here as they're ported from
-// design/project-north-start/project/primitives.jsx and screens.jsx.
 
-export {};
+export { Icon, ICON_PATHS } from './components/Icon';
+export type { IconName, IconProps } from './components/Icon';
+
+export { Avatar } from './components/Avatar';
+export type { AvatarProps, PersonLike } from './components/Avatar';
+
+export { StatusChip } from './components/StatusChip';
+export type { StatusChipProps, TaskStatus } from './components/StatusChip';
+
+export { PriorityDot } from './components/PriorityDot';
+export type { PriorityDotProps, TaskPriority } from './components/PriorityDot';
+
+export { CtxBadge } from './components/CtxBadge';
+export type { CtxBadgeProps } from './components/CtxBadge';
+
+export { PersonChip } from './components/PersonChip';
+export type { PersonChipProps } from './components/PersonChip';
+
+export { DateChip } from './components/DateChip';
+export type { DateChipProps, DateChipState } from './components/DateChip';
+
+export { SectionHead } from './components/SectionHead';
+export type { SectionHeadProps } from './components/SectionHead';
+
+export { TaskRow } from './components/TaskRow';
+export type { TaskRowProps, TaskRowModel } from './components/TaskRow';
