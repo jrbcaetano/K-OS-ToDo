@@ -67,4 +67,6 @@ Free-form notes from the session that don't fit elsewhere.
 
 ## Index
 
-_(Session notes are added here in reverse chronological order — newest first.)_
+_Newest first._
+
+- 2026-05-09 — [[2026-05-09 - initial-planning-architecture-and-stack|Initial planning — architecture, stack, and project bootstrap]]
