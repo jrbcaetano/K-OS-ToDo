@@ -902,7 +902,7 @@ Update this table as blocks ship.
 |---|---|---|---|
 | 1 | Sessions + workspace + auth middleware | ☑ | [[2026-05-09 - block-1-sessions-workspace-auth-middleware]] |
 | 2 | Password + magic link auth | ☑ | [[2026-05-09 - block-2-password-and-magic-link-auth]] |
-| 3 | Google OAuth + account linking | ☐ |  |
+| 3 | Google OAuth + account linking | ☑ | [[2026-05-09 - block-3-google-oauth-and-account-linking]] |
 | 4 | Catalog CRUD + workspace seeding | ☐ |  |
 | 5 | People + Projects + Areas CRUD | ☐ |  |
 | 6 | Tasks CRUD + activity log | ☐ |  |

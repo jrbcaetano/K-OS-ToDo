@@ -7,8 +7,15 @@
  * call this helper so workspace creation has a single shape and a single
  * place to evolve.
  *
- * Block 4 will extend this helper to seed the 6 default contexts inside the
- * same transaction.
+ * Two callable forms:
+ *   - `createWorkspaceForUser(db, ...)` — opens its own transaction. Use
+ *     from top-level callers like the signup route.
+ *   - `createWorkspaceForUserTx(tx, ...)` — assumes the caller already holds
+ *     a transaction. Use from inside `db.transaction(...)`. neon-http does
+ *     not support nested transactions (it's a single HTTP round-trip), so
+ *     the inner form is required when composing with another tx.
+ *
+ * Block 4 will extend the inner form to seed the 6 default contexts.
  */
 
 import { workspaces, workspaceMembers, type Db } from '@k-os/db';
@@ -25,26 +32,33 @@ export interface CreatedWorkspace {
 }
 
 /**
- * Create a workspace and seat `userId` as its sole owner. Returns the new
- * workspace's id + name. Both rows are inserted in a transaction so we never
- * end up with an orphaned workspace if the membership write fails.
+ * Transaction handle compatible with both the top-level Db client and the
+ * `tx` argument of `db.transaction(...)`. Both implement the query API
+ * methods we use (`insert`, `select`, etc.).
  */
-export async function createWorkspaceForUser(
-  db: Db,
+type TxLike = Parameters<Parameters<Db['transaction']>[0]>[0] | Db;
+
+export async function createWorkspaceForUserTx(
+  tx: TxLike,
   { userId, name = 'Personal' }: CreateWorkspaceForUserInput,
 ): Promise<CreatedWorkspace> {
-  return db.transaction(async (tx) => {
-    const [workspace] = await tx
-      .insert(workspaces)
-      .values({ name, createdBy: userId })
-      .returning({ id: workspaces.id, name: workspaces.name });
+  const [workspace] = await tx
+    .insert(workspaces)
+    .values({ name, createdBy: userId })
+    .returning({ id: workspaces.id, name: workspaces.name });
 
-    await tx.insert(workspaceMembers).values({
-      workspaceId: workspace.id,
-      userId,
-      role: 'owner',
-    });
-
-    return workspace;
+  await tx.insert(workspaceMembers).values({
+    workspaceId: workspace.id,
+    userId,
+    role: 'owner',
   });
+
+  return workspace;
+}
+
+export async function createWorkspaceForUser(
+  db: Db,
+  input: CreateWorkspaceForUserInput,
+): Promise<CreatedWorkspace> {
+  return db.transaction((tx) => createWorkspaceForUserTx(tx, input));
 }
