@@ -69,6 +69,7 @@ Free-form notes from the session that don't fit elsewhere.
 
 _Newest first._
 
+- 2026-05-09 — [[2026-05-09 - block-6-tasks-crud-and-activity-log|Block 6 — Tasks CRUD + activity log]]
 - 2026-05-09 — [[2026-05-09 - block-5-people-projects-areas-crud|Block 5 — People + Projects + Areas CRUD]]
 - 2026-05-09 — [[2026-05-09 - block-4-catalog-crud-and-workspace-seeding|Block 4 — Catalog CRUD + workspace seeding]]
 - 2026-05-09 — [[2026-05-09 - block-3-google-oauth-and-account-linking|Block 3 — Google OAuth + account linking]]
