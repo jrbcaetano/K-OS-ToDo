@@ -24,11 +24,17 @@ K-OS Vault/                 # ← Obsidian vault root (open this folder in Obsid
 │   └── Decisions.md        # section index + conventions + template
 ├── Patterns/               # recurring patterns and conventions
 │   └── Patterns.md         # section index + conventions + template
-└── Sessions/               # per-session summaries
-    └── Sessions.md         # section index + conventions + template
+├── Sessions/               # per-session summaries
+│   └── Sessions.md         # section index + conventions + template
+└── Plans/                  # implementation roadmaps with session-sized blocks
+    └── Plans.md            # section index + conventions + template
 ```
 
-Each section's index note (`Decisions.md`, `Patterns.md`, `Sessions.md`) defines the **filename conventions, required frontmatter, and template** for notes in that section. Follow them.
+Each section's index note (`Decisions.md`, `Patterns.md`, `Sessions.md`, `Plans.md`) defines the **filename conventions, required frontmatter, and template** for notes in that section. Follow them.
+
+## Implementation flow
+
+The full ToDo build is split into 18 session-sized blocks in [`K-OS Vault/Plans/k-os-todo-implementation.md`](K-OS%20Vault/Plans/k-os-todo-implementation.md). Each block has a copy-paste **trigger prompt** that bootstraps a fresh Claude session with all the right vault context for that block. Blocks have explicit dependencies; running them in order is the path of least resistance.
 
 ## Vault conventions (summary)
 
@@ -37,6 +43,7 @@ Each section's index note (`Decisions.md`, `Patterns.md`, `Sessions.md`) defines
 - **Decisions** are append-only. To change a decision, write a new ADR that supersedes the old one (`status: superseded`, `superseded-by: [[…]]`); never edit accepted ADRs in place.
 - **Patterns** can be edited as understanding deepens; track changes with the `updated` field.
 - **Sessions** are written to be a handoff to your future self — include goal, outcomes, decisions made (linked to ADRs), open questions, and next steps.
+- **Plans** are work packages: session-sized blocks, each with deliverables, vault references to read first, and a trigger prompt. Plans retire when their module ships.
 
 ## Working with the vault programmatically
 

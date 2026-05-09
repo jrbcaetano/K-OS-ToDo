@@ -16,12 +16,14 @@ Knowledge base, decision log, and working memory for **K-OS** — a modular pers
 > - **Locked architectural decisions**: see [[Decisions]]
 > - **Recurring patterns and conventions**: see [[Patterns]]
 > - **Per-session summaries**: see [[Sessions]]
+> - **Implementation roadmaps**: see [[Plans]]
 
 ## Sections
 
 - [[Decisions]] — architectural decisions with justification (one note per decision)
 - [[Patterns]] — recurring patterns, conventions, and design heuristics
 - [[Sessions]] — chronological log of working sessions and their outcomes
+- [[Plans]] — implementation roadmaps with session-sized blocks and trigger prompts
 
 ## Conventions
 
@@ -32,8 +34,4 @@ Knowledge base, decision log, and working memory for **K-OS** — a modular pers
 
 ## Status
 
-The project is in the **architecture & planning** phase. No code has been written yet. The next steps are:
-
-1. Architecture memo committed to the repo
-2. Schema design (Drizzle, derived from `data.js`)
-3. Repo scaffolding (monorepo, packages, Vite app, Hono API, Drizzle migrations)
+Architecture, schema, and the monorepo scaffold are in place. **Implementation is next** — see [[k-os-todo-implementation]] for the 18-block plan covering everything from auth to launch.
