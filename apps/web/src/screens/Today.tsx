@@ -14,10 +14,12 @@
 
 import { SectionHead, TaskRow, type TaskRowModel } from '@k-os/ui';
 import { useTasksToday, type TaskDto } from '../api/tasks';
+import { useOpenTask } from './_use-open-task';
 import styles from './Today.module.css';
 
 export function TodayScreen() {
   const query = useTasksToday();
+  const open = useOpenTask();
 
   if (query.isLoading) {
     return <div className={styles.loading}>Loading…</div>;
@@ -65,10 +67,10 @@ export function TodayScreen() {
         <Kpi label="Scheduled" value={buckets.scheduled.length} />
       </div>
 
-      <Section title="Overdue" alert={buckets.overdue.length > 0 ? 'needs attention' : null} tasks={buckets.overdue} />
-      <Section title="Due today" tasks={buckets.due} />
-      <Section title="Follow-ups due today" tasks={buckets.followups} showStatus />
-      <Section title="Scheduled" tasks={buckets.scheduled} />
+      <Section title="Overdue" alert={buckets.overdue.length > 0 ? 'needs attention' : null} tasks={buckets.overdue} onOpen={open} />
+      <Section title="Due today" tasks={buckets.due} onOpen={open} />
+      <Section title="Follow-ups due today" tasks={buckets.followups} showStatus onOpen={open} />
+      <Section title="Scheduled" tasks={buckets.scheduled} onOpen={open} />
     </>
   );
 }
@@ -78,16 +80,26 @@ interface SectionProps {
   tasks: TaskDto[];
   showStatus?: boolean;
   alert?: string | null;
+  onOpen?: (task: TaskRowModel) => void;
 }
 
-function Section({ title, tasks, showStatus = false, alert }: SectionProps) {
+function Section({ title, tasks, showStatus = false, alert, onOpen }: SectionProps) {
   if (tasks.length === 0) return null;
   return (
     <div className={styles.section}>
       <SectionHead title={title} count={tasks.length} alert={alert ?? null} />
-      {tasks.map((task) => (
-        <TaskRow key={task.id} task={toRowModel(task)} showStatus={showStatus} />
-      ))}
+      {tasks.map((task) =>
+        onOpen ? (
+          <TaskRow
+            key={task.id}
+            task={toRowModel(task)}
+            showStatus={showStatus}
+            onOpen={onOpen}
+          />
+        ) : (
+          <TaskRow key={task.id} task={toRowModel(task)} showStatus={showStatus} />
+        ),
+      )}
     </div>
   );
 }

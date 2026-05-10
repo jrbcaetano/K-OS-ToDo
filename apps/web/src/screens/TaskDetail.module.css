@@ -1,0 +1,247 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--ink);
+  font-family: inherit;
+  width: 100%;
+  padding: 0;
+}
+.title:focus {
+  outline: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0 4px;
+  margin-left: -4px;
+}
+.metaLine {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  margin-top: 6px;
+  margin-bottom: 18px;
+}
+
+.descriptionLabel {
+  font-size: 11px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.description {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  cursor: text;
+  min-height: 24px;
+}
+.descriptionEmpty {
+  color: var(--ink-4);
+  font-style: italic;
+}
+.descriptionEdit {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  resize: vertical;
+  min-height: 100px;
+  background: var(--paper);
+}
+
+.divider {
+  height: 1px;
+  background: var(--line-soft);
+  margin: 24px 0;
+}
+
+.events {
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  background: var(--paper-2);
+  padding: 4px 0;
+}
+.event {
+  font-size: 12px;
+  padding: 6px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.eventDate {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-4);
+  flex-shrink: 0;
+  width: 100px;
+}
+.eventBody {
+  color: var(--ink-2);
+  flex: 1;
+  min-width: 0;
+}
+.eventCount {
+  font-size: 11px;
+  color: var(--ink-4);
+  padding: 6px 12px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.commentForm {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.commentInput {
+  flex: 1;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 13px;
+  background: var(--paper);
+}
+.commentBtn {
+  height: 30px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+  font: inherit;
+}
+.commentBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Right rail */
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  padding: 14px 14px;
+  background: var(--paper-2);
+  font-size: 12px;
+}
+.railRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 4px;
+  border-radius: 4px;
+}
+.railRow:hover {
+  background: var(--paper-3);
+}
+.railLabel {
+  color: var(--ink-3);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: var(--font-mono);
+}
+.railValue {
+  color: var(--ink);
+  font-size: 12.5px;
+  text-align: right;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 500;
+}
+.railValueEmpty {
+  color: var(--ink-4);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.pickerContent {
+  width: 320px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  padding: 6px 0;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.pickerSearch {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  background: transparent;
+  border-bottom: 1px solid var(--line-soft);
+}
+.pickerOption {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.pickerOption:hover,
+.pickerOptionActive {
+  background: var(--paper-3);
+}
+.pickerSub {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-4);
+  margin-top: 1px;
+}
+.pickerEmpty {
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+.tagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 9px;
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--ink-2);
+  margin-right: 4px;
+}

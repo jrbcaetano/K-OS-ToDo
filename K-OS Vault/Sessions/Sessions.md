@@ -69,6 +69,7 @@ Free-form notes from the session that don't fit elsewhere.
 
 _Newest first._
 
+- 2026-05-10 — [[2026-05-10 - block-16-task-detail-and-pickers|Block 16 — Task detail + inline pickers]]
 - 2026-05-10 — [[2026-05-10 - block-15-people-list-and-detail|Block 15 — People list + detail]]
 - 2026-05-10 — [[2026-05-10 - block-14-areas-list-and-detail|Block 14 — Areas list + detail]]
 - 2026-05-10 — [[2026-05-10 - block-13-projects-list-and-detail|Block 13 — Projects list + detail]]

@@ -541,6 +541,42 @@ app.post('/:id/restore', async (c) => {
   return c.json({ task: updated });
 });
 
+const commentSchema = z.object({
+  body: z.string().min(1).max(4000),
+});
+
+app.post('/:id/comment', async (c) => {
+  const body = await c.req.json().catch(() => null);
+  const parsed = commentSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ error: 'invalid_body', issues: parsed.error.issues }, 400);
+  }
+  const workspaceId = getWorkspaceId(c);
+  const user = c.get('user');
+  const db = getDb();
+  const id = c.req.param('id');
+
+  const [t] = await db
+    .select({ id: tasks.id })
+    .from(tasks)
+    .where(and(eq(tasks.id, id), eq(tasks.workspaceId, workspaceId)))
+    .limit(1);
+  if (!t) return c.json({ error: 'not_found' }, 404);
+
+  const [event] = await db
+    .insert(taskEvents)
+    .values({
+      workspaceId,
+      taskId: id,
+      kind: 'commented',
+      actorKind: 'user',
+      actorUserId: user.id,
+      payload: { body: parsed.data.body },
+    })
+    .returning();
+  return c.json({ event }, 201);
+});
+
 // ---------------------------------------------------------------------------
 // Internal utils
 // ---------------------------------------------------------------------------
