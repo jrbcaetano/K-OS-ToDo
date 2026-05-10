@@ -910,7 +910,7 @@ Update this table as blocks ship.
 | 8 | Design system primitives port | ☑ | [[2026-05-09 - block-8-design-system-primitives-port]] |
 | 9 | App shell + tweaks panel | ☑ | [[2026-05-09 - block-9-app-shell-and-tweaks-panel]] |
 | 10 | Today screen | ☑ | [[2026-05-09 - block-10-today-screen]] |
-| 11 | Inbox + Quick Capture | ☐ |  |
+| 11 | Inbox + Quick Capture | ☑ | [[2026-05-10 - block-11-inbox-and-quick-capture]] |
 | 12 | Upcoming, Waiting, Review screens | ☐ |  |
 | 13 | Projects list + detail | ☐ |  |
 | 14 | Areas list + detail | ☐ |  |

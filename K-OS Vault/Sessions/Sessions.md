@@ -69,6 +69,7 @@ Free-form notes from the session that don't fit elsewhere.
 
 _Newest first._
 
+- 2026-05-10 — [[2026-05-10 - block-11-inbox-and-quick-capture|Block 11 — Inbox + Quick Capture]]
 - 2026-05-09 — [[2026-05-09 - block-10-today-screen|Block 10 — Today screen]]
 - 2026-05-09 — [[2026-05-09 - block-9-app-shell-and-tweaks-panel|Block 9 — App shell + tweaks panel]]
 - 2026-05-09 — [[2026-05-09 - block-8-design-system-primitives-port|Block 8 — Design system primitives port]]
