@@ -69,6 +69,7 @@ Free-form notes from the session that don't fit elsewhere.
 
 _Newest first._
 
+- 2026-05-10 — [[2026-05-10 - block-14-areas-list-and-detail|Block 14 — Areas list + detail]]
 - 2026-05-10 — [[2026-05-10 - block-13-projects-list-and-detail|Block 13 — Projects list + detail]]
 - 2026-05-10 — [[2026-05-10 - block-12-upcoming-waiting-review-screens|Block 12 — Upcoming, Waiting, Review screens]]
 - 2026-05-10 — [[2026-05-10 - block-11-inbox-and-quick-capture|Block 11 — Inbox + Quick Capture]]

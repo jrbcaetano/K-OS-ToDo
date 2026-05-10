@@ -16,41 +16,35 @@ import { Route as WaitingRouteImport } from './routes/waiting'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as ProjectsIdRouteImport } from './routes/projects/$id'
+import { Route as AreasIndexRouteImport } from './routes/areas/index'
+import { Route as AreasIdRouteImport } from './routes/areas/$id'
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
+  id: '/', path: '/', getParentRoute: () => rootRouteImport,
 } as any)
 const InboxRoute = InboxRouteImport.update({
-  id: '/inbox',
-  path: '/inbox',
-  getParentRoute: () => rootRouteImport,
+  id: '/inbox', path: '/inbox', getParentRoute: () => rootRouteImport,
 } as any)
 const UpcomingRoute = UpcomingRouteImport.update({
-  id: '/upcoming',
-  path: '/upcoming',
-  getParentRoute: () => rootRouteImport,
+  id: '/upcoming', path: '/upcoming', getParentRoute: () => rootRouteImport,
 } as any)
 const WaitingRoute = WaitingRouteImport.update({
-  id: '/waiting',
-  path: '/waiting',
-  getParentRoute: () => rootRouteImport,
+  id: '/waiting', path: '/waiting', getParentRoute: () => rootRouteImport,
 } as any)
 const ReviewRoute = ReviewRouteImport.update({
-  id: '/review',
-  path: '/review',
-  getParentRoute: () => rootRouteImport,
+  id: '/review', path: '/review', getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
-  id: '/projects/',
-  path: '/projects/',
-  getParentRoute: () => rootRouteImport,
+  id: '/projects/', path: '/projects/', getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsIdRoute = ProjectsIdRouteImport.update({
-  id: '/projects/$id',
-  path: '/projects/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/projects/$id', path: '/projects/$id', getParentRoute: () => rootRouteImport,
+} as any)
+const AreasIndexRoute = AreasIndexRouteImport.update({
+  id: '/areas/', path: '/areas/', getParentRoute: () => rootRouteImport,
+} as any)
+const AreasIdRoute = AreasIdRouteImport.update({
+  id: '/areas/$id', path: '/areas/$id', getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -61,6 +55,8 @@ export interface FileRoutesByFullPath {
   '/review': typeof ReviewRoute
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$id': typeof ProjectsIdRoute
+  '/areas/': typeof AreasIndexRoute
+  '/areas/$id': typeof AreasIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +66,8 @@ export interface FileRoutesByTo {
   '/review': typeof ReviewRoute
   '/projects': typeof ProjectsIndexRoute
   '/projects/$id': typeof ProjectsIdRoute
+  '/areas': typeof AreasIndexRoute
+  '/areas/$id': typeof AreasIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,28 +78,21 @@ export interface FileRoutesById {
   '/review': typeof ReviewRoute
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$id': typeof ProjectsIdRoute
+  '/areas/': typeof AreasIndexRoute
+  '/areas/$id': typeof AreasIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/inbox'
-    | '/upcoming'
-    | '/waiting'
-    | '/review'
-    | '/projects/'
-    | '/projects/$id'
+    | '/' | '/inbox' | '/upcoming' | '/waiting' | '/review'
+    | '/projects/' | '/projects/$id' | '/areas/' | '/areas/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/inbox' | '/upcoming' | '/waiting' | '/review' | '/projects' | '/projects/$id'
+  to:
+    | '/' | '/inbox' | '/upcoming' | '/waiting' | '/review'
+    | '/projects' | '/projects/$id' | '/areas' | '/areas/$id'
   id:
-    | '__root__'
-    | '/'
-    | '/inbox'
-    | '/upcoming'
-    | '/waiting'
-    | '/review'
-    | '/projects/'
-    | '/projects/$id'
+    | '__root__' | '/' | '/inbox' | '/upcoming' | '/waiting' | '/review'
+    | '/projects/' | '/projects/$id' | '/areas/' | '/areas/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -112,70 +103,27 @@ export interface RootRouteChildren {
   ReviewRoute: typeof ReviewRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
   ProjectsIdRoute: typeof ProjectsIdRoute
+  AreasIndexRoute: typeof AreasIndexRoute
+  AreasIdRoute: typeof AreasIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/inbox': {
-      id: '/inbox'
-      path: '/inbox'
-      fullPath: '/inbox'
-      preLoaderRoute: typeof InboxRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/upcoming': {
-      id: '/upcoming'
-      path: '/upcoming'
-      fullPath: '/upcoming'
-      preLoaderRoute: typeof UpcomingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/waiting': {
-      id: '/waiting'
-      path: '/waiting'
-      fullPath: '/waiting'
-      preLoaderRoute: typeof WaitingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/review': {
-      id: '/review'
-      path: '/review'
-      fullPath: '/review'
-      preLoaderRoute: typeof ReviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects/': {
-      id: '/projects/'
-      path: '/projects'
-      fullPath: '/projects/'
-      preLoaderRoute: typeof ProjectsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects/$id': {
-      id: '/projects/$id'
-      path: '/projects/$id'
-      fullPath: '/projects/$id'
-      preLoaderRoute: typeof ProjectsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    '/': { id: '/'; path: '/'; fullPath: '/'; preLoaderRoute: typeof IndexRouteImport; parentRoute: typeof rootRouteImport }
+    '/inbox': { id: '/inbox'; path: '/inbox'; fullPath: '/inbox'; preLoaderRoute: typeof InboxRouteImport; parentRoute: typeof rootRouteImport }
+    '/upcoming': { id: '/upcoming'; path: '/upcoming'; fullPath: '/upcoming'; preLoaderRoute: typeof UpcomingRouteImport; parentRoute: typeof rootRouteImport }
+    '/waiting': { id: '/waiting'; path: '/waiting'; fullPath: '/waiting'; preLoaderRoute: typeof WaitingRouteImport; parentRoute: typeof rootRouteImport }
+    '/review': { id: '/review'; path: '/review'; fullPath: '/review'; preLoaderRoute: typeof ReviewRouteImport; parentRoute: typeof rootRouteImport }
+    '/projects/': { id: '/projects/'; path: '/projects'; fullPath: '/projects/'; preLoaderRoute: typeof ProjectsIndexRouteImport; parentRoute: typeof rootRouteImport }
+    '/projects/$id': { id: '/projects/$id'; path: '/projects/$id'; fullPath: '/projects/$id'; preLoaderRoute: typeof ProjectsIdRouteImport; parentRoute: typeof rootRouteImport }
+    '/areas/': { id: '/areas/'; path: '/areas'; fullPath: '/areas/'; preLoaderRoute: typeof AreasIndexRouteImport; parentRoute: typeof rootRouteImport }
+    '/areas/$id': { id: '/areas/$id'; path: '/areas/$id'; fullPath: '/areas/$id'; preLoaderRoute: typeof AreasIdRouteImport; parentRoute: typeof rootRouteImport }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  InboxRoute: InboxRoute,
-  UpcomingRoute: UpcomingRoute,
-  WaitingRoute: WaitingRoute,
-  ReviewRoute: ReviewRoute,
-  ProjectsIndexRoute: ProjectsIndexRoute,
-  ProjectsIdRoute: ProjectsIdRoute,
+  IndexRoute, InboxRoute, UpcomingRoute, WaitingRoute, ReviewRoute,
+  ProjectsIndexRoute, ProjectsIdRoute, AreasIndexRoute, AreasIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
