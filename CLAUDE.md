@@ -7,6 +7,18 @@
 - Authoritative design lives in `design/project-north-start/`. Read it before any UI/schema work — `chats/chat1.md` for intent, `project/styles.css` for design tokens, `project/data.js` for the canonical entity shapes.
 - Locked architectural decisions (stack, hosting, auth, etc.) are in project memory at `.claude/projects/.../memory/decision_stack_and_hosting.md`. **Do not re-debate** these without an explicit user request.
 
+## Core principle: agent-native architecture
+
+> The platform must not "think." Reasoning, planning, and recommendations live in **external agents** that authenticate against the public API with workspace-scoped Agent API keys. The platform stores data, enforces workspace scoping, and logs activity — nothing else.
+
+Practical implications when working on the platform:
+- **No LLM calls inside `packages/`.** No Anthropic / OpenAI / etc. SDK imports here.
+- **No AI-flavored helpers** like `parseCapture` / `agentSuggestions` in the platform — those live in agent services.
+- **`actor_kind` on `task_events`** distinguishes user / agent / system actions; the auth middleware exposes a discriminated `Actor` so domain routes stamp it correctly. See `packages/api/src/middleware/auth.ts`.
+- **Agent keys are workspace-scoped** and human-issued. Agents cannot bootstrap or escalate themselves.
+
+The full reasoning is in [[0020 - agent-native-architecture-agents-external-to-platform]]. ADR [[0018]] (which advocated in-platform AI) is **superseded** by it.
+
 ## Working agreements
 
 - **Memory System**: Store all architectural decisions in `K-OS Vault/Decisions/` and patterns in `K-OS Vault/Patterns/`.

@@ -1,9 +1,9 @@
 ---
 type: plan
 module: k-os-todo
-status: in-progress
+status: implemented
 created: 2026-05-09
-updated: 2026-05-09
+updated: 2026-05-10
 tags:
   - plan
   - k-os-todo
@@ -12,7 +12,12 @@ tags:
 
 # K-OS ToDo — Implementation Plan
 
-End-to-end roadmap from the current scaffolded skeleton (commit `a8dda37`, 2026-05-09) to a feature-complete K-OS ToDo MVP. **18 blocks across 6 phases.** Each block is sized for one focused session.
+End-to-end roadmap from the scaffolded skeleton (commit `a8dda37`, 2026-05-09) to a feature-complete K-OS ToDo MVP. **18 blocks across 6 phases.** Each block was sized for one focused session.
+
+> [!success] Implementation complete (2026-05-10)
+> All 18 blocks shipped. The platform is feature-complete from a code perspective; remaining work is operational (production deploy, env vars, Lighthouse run, building external agents).
+>
+> **Notable mid-plan pivot**: Block 18 was reframed from "wire AI inside the platform" to **agent-native architecture** — see [[0020 - agent-native-architecture-agents-external-to-platform]]. ADR [[0018]] was superseded. The pivot was nearly free because the platform never actually called the AI package; the deferral pattern from Block 7 turned out to be the most valuable accident in the build.
 
 > [!info] How to use this plan
 > 1. Open the block you want to implement.
