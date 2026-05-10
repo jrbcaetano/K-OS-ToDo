@@ -93,8 +93,9 @@ _Sequence is global. ADRs are append-only — to revise, write a new ADR with `s
 - [[0016 - account-linking-auto-on-verified-email]] — auto-link OAuth to existing user when email is verified
 - [[0017 - sessions-not-jwts]] — opaque session tokens in `sessions` table, revocable
 
-### AI
-- [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]] — Anthropic SDK; Haiku 4.5 + Sonnet 4.6; caching from day one
+### Architecture & agents
+- [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]] — _superseded by 0020._ Originally: Anthropic SDK + caching inside the platform.
+- [[0020 - agent-native-architecture-agents-external-to-platform]] — platform stays "dumb"; agents are external services authenticating via workspace-scoped Agent API keys.
 
 ### Knowledge base & process
 - [[0019 - obsidian-vault-as-knowledge-base]] — Obsidian vault at `K-OS Vault/`; ADRs / Patterns / Sessions

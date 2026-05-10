@@ -39,7 +39,12 @@ import {
   getDb,
 } from '@k-os/db';
 import { TASK_STATUSES, TASK_PRIORITIES, SOURCE_KINDS } from '@k-os/core';
-import type { AuthVariables } from '../middleware/auth';
+import {
+  actorEventStamp,
+  actorUserId,
+  type Actor,
+  type AuthVariables,
+} from '../middleware/auth';
 import { getWorkspaceId } from '../middleware/workspace';
 import { stripUndefined } from './_helpers';
 import {
@@ -282,7 +287,9 @@ app.post('/', async (c) => {
     return c.json({ error: 'invalid_body', issues: parsed.error.issues }, 400);
   }
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const actor: Actor = c.get('actor');
+  const userId = actorUserId(actor);
+  const stamp = actorEventStamp(actor);
   const db = getDb();
   const d = parsed.data;
 
@@ -302,14 +309,14 @@ app.post('/', async (c) => {
         projectId: d.projectId ?? null,
         areaId: d.areaId ?? null,
         personId: d.personId ?? null,
-        ownerId: d.ownerId ?? user.id,
+        ownerId: d.ownerId ?? userId,
         sourceKind: d.sourceKind ?? null,
         sourceRef: d.sourceRef ?? null,
         dueAt: d.dueAt ? new Date(d.dueAt) : null,
         scheduledAt: d.scheduledAt ? new Date(d.scheduledAt) : null,
         reviewAt: d.reviewAt ? new Date(d.reviewAt) : null,
         waitingFor: d.waitingFor ?? null,
-        createdBy: user.id,
+        createdBy: userId,
       })
       .returning();
 
@@ -331,8 +338,8 @@ app.post('/', async (c) => {
       workspaceId,
       taskId: task.id,
       kind: 'created',
-      actorKind: 'user',
-      actorUserId: user.id,
+      actorKind: stamp.actorKind,
+      actorUserId: stamp.actorUserId,
       payload: null,
     });
     return task;
@@ -353,7 +360,8 @@ app.patch('/:id', async (c) => {
   }
 
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const actor: Actor = c.get('actor');
+  const stamp = actorEventStamp(actor);
   const db = getDb();
   const id = c.req.param('id');
 
@@ -387,8 +395,8 @@ app.patch('/:id', async (c) => {
         workspaceId,
         taskId: id,
         kind: 'status_changed',
-        actorKind: 'user',
-        actorUserId: user.id,
+        actorKind: stamp.actorKind,
+        actorUserId: stamp.actorUserId,
         payload: { from: before.status, to: after.status },
       });
     }
@@ -397,8 +405,8 @@ app.patch('/:id', async (c) => {
         workspaceId,
         taskId: id,
         kind: 'priority_changed',
-        actorKind: 'user',
-        actorUserId: user.id,
+        actorKind: stamp.actorKind,
+        actorUserId: stamp.actorUserId,
         payload: { from: before.priority, to: after.priority },
       });
     }
@@ -411,8 +419,8 @@ app.patch('/:id', async (c) => {
           workspaceId,
           taskId: id,
           kind: 'field_edited',
-          actorKind: 'user' as const,
-          actorUserId: user.id,
+          actorKind: stamp.actorKind,
+          actorUserId: stamp.actorUserId,
           payload: d as never,
         })),
       );
@@ -438,7 +446,7 @@ app.delete('/:id', async (c) => {
 
 app.post('/:id/complete', async (c) => {
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const stamp = actorEventStamp(c.get('actor'));
   const db = getDb();
   const id = c.req.param('id');
 
@@ -461,16 +469,16 @@ app.post('/:id/complete', async (c) => {
         workspaceId,
         taskId: id,
         kind: 'completed',
-        actorKind: 'user',
-        actorUserId: user.id,
+        actorKind: stamp.actorKind,
+        actorUserId: stamp.actorUserId,
         payload: null,
       },
       {
         workspaceId,
         taskId: id,
         kind: 'status_changed',
-        actorKind: 'user',
-        actorUserId: user.id,
+        actorKind: stamp.actorKind,
+        actorUserId: stamp.actorUserId,
         payload: { from: before.status, to: 'done' },
       },
     ]);
@@ -483,7 +491,7 @@ app.post('/:id/complete', async (c) => {
 
 app.post('/:id/archive', async (c) => {
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const actor: Actor = c.get('actor');
   const db = getDb();
   const id = c.req.param('id');
   const updated = await db.transaction(async (tx) => {
@@ -503,7 +511,7 @@ app.post('/:id/archive', async (c) => {
       workspaceId,
       taskId: id,
       kind: 'archived',
-      actorUserId: user.id,
+      actor,
     });
     return after;
   });
@@ -513,7 +521,7 @@ app.post('/:id/archive', async (c) => {
 
 app.post('/:id/restore', async (c) => {
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const actor: Actor = c.get('actor');
   const db = getDb();
   const id = c.req.param('id');
   const updated = await db.transaction(async (tx) => {
@@ -533,7 +541,7 @@ app.post('/:id/restore', async (c) => {
       workspaceId,
       taskId: id,
       kind: 'restored',
-      actorUserId: user.id,
+      actor,
     });
     return after;
   });
@@ -552,7 +560,7 @@ app.post('/:id/comment', async (c) => {
     return c.json({ error: 'invalid_body', issues: parsed.error.issues }, 400);
   }
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const stamp = actorEventStamp(c.get('actor'));
   const db = getDb();
   const id = c.req.param('id');
 
@@ -569,8 +577,8 @@ app.post('/:id/comment', async (c) => {
       workspaceId,
       taskId: id,
       kind: 'commented',
-      actorKind: 'user',
-      actorUserId: user.id,
+      actorKind: stamp.actorKind,
+      actorUserId: stamp.actorUserId,
       payload: { body: parsed.data.body },
     })
     .returning();

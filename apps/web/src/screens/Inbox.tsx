@@ -10,9 +10,11 @@
  *   J / ↓ → next item
  *   K / ↑ → previous item
  *
- * AI suggestions are not wired here — Block 18 will surface them under
- * the description block. The capture step also keeps `ai_parsed = null`
- * for now per Block 7's note.
+ * Per [[0020 - agent-native-architecture-agents-external-to-platform]]
+ * the platform doesn't generate suggestions. An external agent observes
+ * new inbox rows and PATCHes `ai_parsed`; once that field is populated,
+ * the triage UI can surface accept/reject chips for each suggested field.
+ * That render path lands when an agent service is built.
  */
 
 import { useEffect, useState } from 'react';

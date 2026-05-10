@@ -100,21 +100,21 @@ Sessions are opaque tokens in a `sessions` table — server-validated per reques
 
 **Rate limiting** on login via Vercel Middleware (per-IP throttle).
 
-📎 ADRs: [[0013 - auth-on-oslo-and-arctic-not-lucia]], [[0014 - auth-methods-password-magic-link-google-oauth]] [[0015 - email-own-smtp-via-nodemailer]] [[0016 - account-linking-auto-on-verified-email]] [[0017 - sessions-not-jwts]]
-## AI
+**Agent authentication** (per [[0020 - agent-native-architecture-agents-external-to-platform]]): a workspace-scoped Agent API key in `Authorization: Bearer kos_…`. Issued and revoked through `/api/agents` by humans (cookie auth only). Same routes serve both kinds of caller; the auth middleware exposes a discriminated `Actor` so events stamp `actor_kind` correctly.
 
-The `packages/ai` package wraps Anthropic SDK calls, invoked from Hono routes.
+📎 ADRs: [[0013 - auth-on-oslo-and-arctic-not-lucia]], [[0014 - auth-methods-password-magic-link-google-oauth]] [[0015 - email-own-smtp-via-nodemailer]] [[0016 - account-linking-auto-on-verified-email]] [[0017 - sessions-not-jwts]] [[0020 - agent-native-architecture-agents-external-to-platform]]
+## Agents (out of platform scope)
 
-| Concern | Choice |
-|---|---|
-| SDK | Anthropic SDK (TypeScript) |
-| Models | Claude Haiku 4.5 (cheap parsing), Claude Sonnet 4.6 (reasoning) |
-| Prompt caching | **From day one** |
-| MVP endpoints | `parseCapture(text)`, `agentSuggestions(entityRef)` |
+The platform itself does **not** call any LLM. Per [[0020 - agent-native-architecture-agents-external-to-platform]], reasoning, planning, and provider integration live in **external agent services**. Agents:
 
-The design embeds AI structurally — NL parse runs silently on every quick capture, agent suggestion cards appear on detail pages, agent activity is logged in review. AI is part of MVP, not phase 3.
+- Authenticate against `/api/*` with a workspace-scoped Agent API key.
+- Read entities, write decisions, post comments, fill `tasks.ai_parsed`, etc.
+- Emit events that land with `actor_kind = 'agent'` so the activity log distinguishes agent work from user work.
+- Each agent is its own deployable; multiple specialised agents can coexist; provider choice (Anthropic, OpenAI, …) is per-agent.
 
-📎 ADRs: [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]]
+ADR [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]] is **superseded** — its guidance about Anthropic SDK + prompt caching still holds, but inside an agent service rather than the platform.
+
+📎 ADRs: [[0020 - agent-native-architecture-agents-external-to-platform]]
 ## Mobile
 
 Single responsive PWA with breakpoint-driven layout modes:

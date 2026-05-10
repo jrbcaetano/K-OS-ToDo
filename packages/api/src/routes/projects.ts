@@ -23,7 +23,7 @@ import {
   getDb,
 } from '@k-os/db';
 import { ARCHIVE_REASONS, PROJECT_STATUSES } from '@k-os/core';
-import type { AuthVariables } from '../middleware/auth';
+import { actorUserId, type AuthVariables } from '../middleware/auth';
 import { getWorkspaceId } from '../middleware/workspace';
 import { stripUndefined } from './_helpers';
 
@@ -86,7 +86,7 @@ app.post('/', async (c) => {
     return c.json({ error: 'invalid_body', issues: parsed.error.issues }, 400);
   }
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const userId = actorUserId(c.get('actor'));
   const db = getDb();
   const d = parsed.data;
   const [row] = await db
@@ -98,7 +98,7 @@ app.post('/', async (c) => {
       status: d.status ?? 'on_track',
       contextId: d.contextId ?? null,
       targetDate: d.targetDate ?? null,
-      createdBy: user.id,
+      createdBy: userId,
     })
     .returning();
   return c.json({ project: row }, 201);
@@ -132,7 +132,7 @@ app.post('/:id/archive', async (c) => {
     return c.json({ error: 'invalid_body', issues: parsed.error.issues }, 400);
   }
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const userId = actorUserId(c.get('actor'));
   const db = getDb();
   const [row] = await db
     .update(projects)
@@ -140,7 +140,7 @@ app.post('/:id/archive', async (c) => {
       archivedAt: new Date(),
       archiveReason: parsed.data.reason,
       archiveNote: parsed.data.note ?? null,
-      archivedBy: user.id,
+      archivedBy: userId,
     })
     .where(
       and(

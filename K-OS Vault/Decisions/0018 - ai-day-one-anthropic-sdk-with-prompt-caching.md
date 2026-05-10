@@ -1,12 +1,17 @@
 ---
 type: decision
-status: accepted
+status: superseded
+superseded-by: "[[0020 - agent-native-architecture-agents-external-to-platform]]"
 date: 2026-05-09
 tags:
   - decision
   - ai
   - anthropic
+  - superseded
 ---
+
+> [!warning] Superseded by [[0020 - agent-native-architecture-agents-external-to-platform]]
+> Reasoning, prompt construction, and provider integration belong in **external agents**, not in the platform. The Anthropic SDK and prompt-caching guidance below remain useful — they apply inside an agent service. The platform itself does not call LLMs. See the new ADR for the authoritative architecture.
 
 # 0018 — AI is day-one: Anthropic SDK with prompt caching from the start
 

@@ -26,6 +26,7 @@ import {
   type AuditedTaskField,
   type TaskEventKind,
 } from '@k-os/core';
+import { actorEventStamp, type Actor } from '../middleware/auth';
 
 /**
  * WHERE expression matching the `active_tasks` view. Apply with a
@@ -47,24 +48,25 @@ export interface EmitTaskEventInput {
   workspaceId: string;
   taskId: string;
   kind: TaskEventKind;
-  actorUserId: string | null;
+  /** The Actor performing the action — discriminated user/agent. */
+  actor: Actor;
   payload?: unknown;
 }
 
 /** Either the top-level Db client or a transaction handle from `db.transaction(...)`. */
 type TxLike = Parameters<Parameters<Db['transaction']>[0]>[0] | Db;
 
-/** Insert one row into `task_events`. Always uses `actorKind = 'user'` when
- *  `actorUserId` is set; falls back to `'system'` otherwise. Agent events
- *  (Block 18) call this with `actorUserId = null` and override `actorKind`
- *  via the payload — for now nothing else needs that. */
+/** Insert one row into `task_events`. The `actor_kind` and `actor_user_id`
+ *  columns are derived from the Actor via `actorEventStamp` so an agent's
+ *  action lands as `actor_kind='agent'` per [[0020]]. */
 export async function emitTaskEvent(tx: TxLike, input: EmitTaskEventInput): Promise<void> {
+  const stamp = actorEventStamp(input.actor);
   await tx.insert(taskEvents).values({
     workspaceId: input.workspaceId,
     taskId: input.taskId,
     kind: input.kind,
-    actorKind: input.actorUserId ? 'user' : 'system',
-    actorUserId: input.actorUserId,
+    actorKind: stamp.actorKind,
+    actorUserId: stamp.actorUserId,
     payload: (input.payload ?? null) as never,
   });
 }

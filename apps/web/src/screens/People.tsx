@@ -115,7 +115,8 @@ function PersonPanel({ id }: { id: string }) {
         }}
       >
         <strong style={{ color: 'var(--ink-2)' }}>Topics for next conversation</strong> —
-        placeholder. Wires up in Block 18 with agent suggestions.
+        empty until an external agent posts here. The platform stays deterministic;
+        agents own the reasoning.
       </div>
 
       <div style={{ marginTop: 18, fontSize: 12, color: 'var(--ink-4)' }}>

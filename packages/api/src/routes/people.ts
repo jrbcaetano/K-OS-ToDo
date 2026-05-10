@@ -10,7 +10,7 @@ import { Hono } from 'hono';
 import { and, asc, eq, isNotNull, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { people, getDb } from '@k-os/db';
-import type { AuthVariables } from '../middleware/auth';
+import { actorUserId, type AuthVariables } from '../middleware/auth';
 import { getWorkspaceId } from '../middleware/workspace';
 import { stripUndefined } from './_helpers';
 
@@ -70,7 +70,7 @@ app.post('/', async (c) => {
     return c.json({ error: 'invalid_body', issues: parsed.error.issues }, 400);
   }
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const userId = actorUserId(c.get('actor'));
   const db = getDb();
   const data = parsed.data;
 
@@ -83,7 +83,7 @@ app.post('/', async (c) => {
       color: data.color,
       contextId: data.contextId ?? null,
       role: data.role ?? null,
-      createdBy: user.id,
+      createdBy: userId,
     })
     .returning();
   return c.json({ person: row }, 201);

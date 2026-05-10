@@ -69,6 +69,7 @@ Free-form notes from the session that don't fit elsewhere.
 
 _Newest first._
 
+- 2026-05-10 — [[2026-05-10 - block-18-agent-native-pivot-and-launch-prep|Block 18 — Agent-native pivot + recurring cron + launch prep]]
 - 2026-05-10 — [[2026-05-10 - block-17-mobile-responsive-layouts|Block 17 — Mobile responsive layouts]]
 - 2026-05-10 — [[2026-05-10 - block-16-task-detail-and-pickers|Block 16 — Task detail + inline pickers]]
 - 2026-05-10 — [[2026-05-10 - block-15-people-list-and-detail|Block 15 — People list + detail]]

@@ -13,7 +13,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@k-os/ai": "workspace:*",
     "@k-os/core": "workspace:*",
     "@k-os/db": "workspace:*",
     "arctic": "^2.2.1",

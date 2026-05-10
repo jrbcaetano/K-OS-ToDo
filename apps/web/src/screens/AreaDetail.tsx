@@ -125,7 +125,9 @@ export function AreaDetail() {
           background: 'var(--paper-2)',
         }}
       >
-        <strong style={{ color: 'var(--ink-2)' }}>Agent suggestions</strong> — placeholder. Wires up in Block 18.
+        <strong style={{ color: 'var(--ink-2)' }}>Agent suggestions</strong> — empty
+        until an external agent posts here. The platform doesn’t generate suggestions;
+        agents read this area and post structured proposals through the public API.
       </div>
 
       {oneOff.length > 0 && (

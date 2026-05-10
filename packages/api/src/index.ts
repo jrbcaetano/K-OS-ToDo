@@ -13,16 +13,21 @@ import areasRoutes from './routes/areas';
 import peopleRoutes from './routes/people';
 import contextsRoutes from './routes/contexts';
 import tagsRoutes from './routes/tags';
-import aiRoutes from './routes/ai';
+import agentsRoutes from './routes/agents';
 import adminRoutes from './routes/admin';
+import cronRoutes from './routes/cron';
 import { requireAuth, type AuthVariables } from './middleware/auth';
 
 /**
  * The K-OS API. Hono app, framework-agnostic.
  *
+ * Per [[0020 - agent-native-architecture-agents-external-to-platform]] the
+ * platform exposes a public API for both humans (session cookie) and
+ * agents (Bearer agent key). The platform itself does not call LLMs;
+ * agents are external services that read and write through these routes.
+ *
  * Mounted on Vercel via apps/web/api/[[...route]].ts which delegates here.
- * Can also be served standalone (Node, Bun, Cloudflare Workers — though
- * Workers requires swapping nodemailer and oslo for Web-Crypto-only equivalents).
+ * Can also be served standalone (Node, Bun) without changes.
  */
 export const app = new Hono<{ Variables: AuthVariables }>().basePath('/api');
 
@@ -38,8 +43,10 @@ app.route('/auth/magic-link', magicLinkRoutes);
 app.route('/auth/oauth/google', googleOAuthRoutes);
 app.route('/auth/session', sessionRoutes);
 
-// Every domain route requires a valid session. The middleware loads the user
-// and active workspace onto the Hono context — see middleware/auth.ts.
+// Cron — gated by CRON_SECRET, NOT by requireAuth.
+app.route('/cron', cronRoutes);
+
+// Every domain route requires a valid actor (session cookie OR agent key).
 // Hono's `/tasks/*` matches `/tasks/anything` but not `/tasks` alone, so we
 // register both patterns for each protected mount.
 const PROTECTED_PREFIXES = [
@@ -50,7 +57,7 @@ const PROTECTED_PREFIXES = [
   '/people',
   '/contexts',
   '/tags',
-  '/ai',
+  '/agents',
   '/admin',
 ] as const;
 for (const prefix of PROTECTED_PREFIXES) {
@@ -67,8 +74,8 @@ app.route('/people', peopleRoutes);
 app.route('/contexts', contextsRoutes);
 app.route('/tags', tagsRoutes);
 
-// AI
-app.route('/ai', aiRoutes);
+// Agents — workspace-scoped Agent API key management (issue / list / revoke).
+app.route('/agents', agentsRoutes);
 
 // Admin (user-triggered ops)
 app.route('/admin', adminRoutes);

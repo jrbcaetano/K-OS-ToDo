@@ -6,8 +6,10 @@
  * with `status='inbox'`. Triage applies optional accepted suggestions and
  * sets the new status. Discard archives the inbox row.
  *
- * AI parse is a marked no-op for now — Block 18 wires the actual
- * Anthropic call and stores `tasks.ai_parsed`.
+ * Per [[0020 - agent-native-architecture-agents-external-to-platform]] the
+ * platform does NOT call any LLM here. `tasks.ai_parsed` is filled by an
+ * external agent service via a subsequent PATCH; the platform only writes
+ * what the user (or the agent acting through the public API) tells it to.
  */
 
 import { Hono } from 'hono';
@@ -15,7 +17,12 @@ import { and, desc, eq, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { tasks, taskEvents, getDb } from '@k-os/db';
 import { TASK_STATUSES, SOURCE_KINDS } from '@k-os/core';
-import type { AuthVariables } from '../middleware/auth';
+import {
+  actorEventStamp,
+  actorUserId,
+  type Actor,
+  type AuthVariables,
+} from '../middleware/auth';
 import { getWorkspaceId } from '../middleware/workspace';
 import { emitTaskEvent } from './_tasks-helpers';
 
@@ -71,12 +78,13 @@ app.post('/capture', async (c) => {
     return c.json({ error: 'invalid_body', issues: parsed.error.issues }, 400);
   }
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const actor: Actor = c.get('actor');
+  const userId = actorUserId(actor);
   const db = getDb();
 
-  // AI parse hook — stays a no-op until Block 18.
-  // const aiParsed = await parseCapture(...);  // deferred to Block 18
-  const aiParsed = null;
+  // Per ADR 0020: the platform doesn't fill `ai_parsed`. An external agent
+  // observes the new inbox row (via list / webhooks / polling) and PATCHes
+  // its parse result back through the public API.
 
   const task = await db.transaction(async (tx) => {
     const [row] = await tx
@@ -89,16 +97,15 @@ app.post('/capture', async (c) => {
         priority: 'routine',
         sourceKind: parsed.data.sourceKind ?? 'manual',
         sourceRef: parsed.data.sourceRef ?? null,
-        ownerId: user.id,
-        createdBy: user.id,
-        aiParsed,
+        ownerId: userId,
+        createdBy: userId,
       })
       .returning();
     await emitTaskEvent(tx, {
       workspaceId,
       taskId: row.id,
       kind: 'created',
-      actorUserId: user.id,
+      actor,
       payload: { source: 'inbox_capture' },
     });
     return row;
@@ -114,7 +121,8 @@ app.post('/:id/triage', async (c) => {
     return c.json({ error: 'invalid_body', issues: parsed.error.issues }, 400);
   }
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const actor: Actor = c.get('actor');
+  const stamp = actorEventStamp(actor);
   const db = getDb();
   const id = c.req.param('id');
   const d = parsed.data;
@@ -149,8 +157,8 @@ app.post('/:id/triage', async (c) => {
       workspaceId,
       taskId: id,
       kind: 'status_changed',
-      actorKind: 'user',
-      actorUserId: user.id,
+      actorKind: stamp.actorKind,
+      actorUserId: stamp.actorUserId,
       payload: { from: 'inbox', to: d.status, source: 'triage' },
     });
 
@@ -163,7 +171,7 @@ app.post('/:id/triage', async (c) => {
 
 app.post('/:id/discard', async (c) => {
   const workspaceId = getWorkspaceId(c);
-  const user = c.get('user');
+  const actor: Actor = c.get('actor');
   const db = getDb();
   const id = c.req.param('id');
   const updated = await db.transaction(async (tx) => {
@@ -184,7 +192,7 @@ app.post('/:id/discard', async (c) => {
       workspaceId,
       taskId: id,
       kind: 'archived',
-      actorUserId: user.id,
+      actor,
       payload: { source: 'inbox_discard' },
     });
     return after;

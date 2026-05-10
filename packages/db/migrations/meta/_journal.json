@@ -15,6 +15,13 @@
       "when": 1778346988453,
       "tag": "0001_active_tasks_view",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778346988454,
+      "tag": "0002_agent_keys",
+      "breakpoints": true
     }
   ]
 }

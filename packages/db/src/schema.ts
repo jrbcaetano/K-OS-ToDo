@@ -135,6 +135,29 @@ export const workspaceMembers = pgTable(
   ],
 );
 
+// Per [[0020 - agent-native-architecture-agents-external-to-platform]]:
+// agents are external services that authenticate against the public API
+// using a workspace-scoped Agent API key. Only the SHA-256 hash of the raw
+// token is stored. Revoke by setting `revoked_at`.
+export const agentKeys = pgTable(
+  'agent_keys',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    workspaceId: uuid('workspace_id')
+      .notNull()
+      .references(() => workspaces.id, { onDelete: 'cascade' }),
+    keyHash: text('key_hash').notNull().unique(),
+    label: text('label').notNull(),
+    createdBy: uuid('created_by')
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+  },
+  (t) => [index('agent_keys_workspace').on(t.workspaceId).where(sql`revoked_at is null`)],
+);
+
 // ============================================================================
 // REFERENCE & CATALOG
 // ============================================================================

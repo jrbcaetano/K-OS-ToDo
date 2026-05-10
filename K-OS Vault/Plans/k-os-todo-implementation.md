@@ -829,68 +829,40 @@ When done, write a session note in "K-OS Vault/Sessions/" and update the Session
 
 ---
 
-### Block 18: AI integration + recurring + PWA polish + launch
+### Block 18: Agent-native pivot + recurring cron + launch prep
 
-**Goal**: Wire up `parseCapture` and `agentSuggestions`, finalise the recurring scheduler, and ship-prep the PWA.
+> [!warning] Architecture pivot
+> The original Block 18 — "wire `parseCapture` and `agentSuggestions` from inside the platform" — was abandoned mid-block in favour of an **agent-native architecture** captured in [[0020 - agent-native-architecture-agents-external-to-platform]]. ADR [[0018 - ai-day-one-anthropic-sdk-with-prompt-caching]] is **superseded**. The platform exposes a public API; reasoning lives in **external agent services**.
+
+**Goal**: Add Agent API key authentication, ship the recurring-task cron, and prepare for production deployment. AI integration is now out-of-platform scope.
 
 **Read first**:
 - `CLAUDE.md`
 - `K-OS Vault/Sessions/` (newest note)
-- `K-OS Vault/Plans/k-os-todo-implementation.md` → Block 18
-- `K-OS Vault/Decisions/0018 - ai-day-one-anthropic-sdk-with-prompt-caching.md`
-- `packages/ai/src/parse-capture.ts` (the typed stub)
-- `packages/ai/src/agent-suggestions.ts` (the typed stub)
+- `K-OS Vault/Decisions/0020 - agent-native-architecture-agents-external-to-platform.md`
 - `K-OS Vault/Patterns/database-branch-strategy.md` (for production migration)
-- The skill `claude-api` from the Anthropic Skills bundle — invoke it when implementing Anthropic SDK calls so prompt caching is set up correctly
 
 **Deliverables**:
-- Implement `parseCapture` (Haiku 4.5):
-  - Builds a system prompt with the workspace catalogue (people, projects, areas, contexts), cached
-  - Returns structured `{ suggestedTitle, suggestedFields }`
-  - Invoked from `/api/inbox/capture` (Block 11's hook) — stores result in `tasks.ai_parsed`
-- Implement `agentSuggestions` (Sonnet 4.6):
-  - Per entity kind (task/project/area/person), generates context-aware bullets and structured proposals
-  - Cached system prompt + per-entity fresh data
-  - Render on the relevant detail pages (Blocks 13–16)
-  - "Accept proposal" action applies the suggestion via the relevant API and emits an `agent_acted` event
-- Recurring scheduler:
-  - Verify the `pg_cron` (or Vercel cron) job from Block 7 is in production
-  - Add admin endpoint `POST /api/admin/materialise-recurring` that triggers it manually for debugging
-- PWA polish:
-  - Verify offline behavior (TanStack Query persistence + service worker)
-  - Test PWA install on iOS, Android, desktop Chrome
-  - Run Lighthouse, fix any blocker scores
-- Production deployment:
-  - Set Vercel **Production** env vars to point at the production Neon branch
-  - First production migration via `pnpm db:migrate` against production
-  - Vercel deploy
-  - Smoke test the live app end-to-end
+- New ADR `0020`; supersede ADR `0018` with frontmatter + banner.
+- Schema: `agent_keys` table (workspace-scoped, hashed key, label, revoked_at, last_used_at). Migration `0002_agent_keys.sql` + Drizzle entry.
+- Auth: `validateAgentKey` / `issueAgentKey` / `revokeAgentKey`. The auth middleware accepts EITHER a session cookie OR `Authorization: Bearer kos_…` and exposes a discriminated `Actor`. Helpers `actorEventStamp` and `actorUserId` so domain routes don't branch on actor kind.
+- Routes: `POST /agents` issues keys (returns the raw token once); `GET /agents` lists; `DELETE /agents/:id` revokes. Issuance/revocation is human-only.
+- Recurring cron: `POST /cron/materialise-recurring` fans out across workspaces, gated by `Authorization: Bearer ${CRON_SECRET}`. `apps/web/vercel.json` declares the daily schedule.
+- Removals: delete `packages/ai/`, drop `@k-os/ai` from api deps, delete `routes/ai.ts` + `/api/ai` mount.
+- UI tidy: replace "Block 18 wires AI" placeholder copy on Inbox / Areas / People with agent-native phrasing.
+- `.env.example`: drop `ANTHROPIC_API_KEY`; add `CRON_SECRET`; document that provider keys live in agent services, not here.
+- `docs/architecture.md`: replace the AI section with "Agents (out of platform scope)".
 
 **Verification**:
-- Capturing "Pay rent friday $1500" populates `ai_parsed` with `suggestedFields.dueAt`.
-- Agent suggestions on a Task detail page surface 2–4 contextually relevant bullets.
-- PWA installs and works offline for previously-loaded data.
-- Production app at the deployed URL is reachable and signs in.
+- `pnpm -r typecheck` is green across `core / db / ui / api / apps/web` (workspace shrank from 7 to 6 with the `ai` deletion).
+- A request with `Authorization: Bearer <agent-key>` reaches a domain route and emits events with `actor_kind = 'agent'`.
+- A request with `Authorization: Bearer ${CRON_SECRET}` to `/cron/materialise-recurring` runs the job; any other auth on that route returns 401.
 
-**Trigger prompt**:
-
-```
-Implement Block 18 of the K-OS implementation plan: "AI integration + recurring + PWA polish + launch".
-
-Before doing anything else, read these files in this order:
-1. CLAUDE.md
-2. The newest note in "K-OS Vault/Sessions/"
-3. "K-OS Vault/Plans/k-os-todo-implementation.md" → "Block 18: AI integration + recurring + PWA polish + launch"
-4. ADR 0018 (Anthropic SDK with prompt caching)
-5. "packages/ai/src/parse-capture.ts" + "packages/ai/src/agent-suggestions.ts" — typed stubs to implement
-6. "K-OS Vault/Patterns/database-branch-strategy.md" — for production migration
-
-ALSO invoke the claude-api skill (from the Anthropic Skills bundle) when implementing the Anthropic SDK calls — it will get prompt caching, message shape, and model selection right.
-
-Then implement Block 18 end-to-end. Models are pinned in packages/ai/src/client.ts (Haiku 4.5 for parsing, Sonnet 4.6 for reasoning). Prompt caching is mandatory from day one (per ADR 0018). Confirm the recurring scheduler from Block 7 is healthy. Run Lighthouse and PWA install checks. Deploy to Vercel production once everything is green.
-
-When done, write a session note in "K-OS Vault/Sessions/" and update the Sessions index. This is the launch session — write it like a launch retrospective: what shipped, what we learned, what's now true that wasn't yesterday. Commit; don't push without user request.
-```
+**Out-of-platform follow-ups (not part of this block)**:
+- Build a first external agent (e.g. inbox-parse) that authenticates via Agent API key.
+- Run Lighthouse + verify PWA install on iOS/Android/desktop Chrome.
+- Deploy: production env vars (`DATABASE_URL` → prod Neon branch, `CRON_SECRET`, SMTP, Google OAuth), apply migrations, deploy.
+- Phase-2 ADR for scoped agent keys + signed requests + user-approval flows.
 
 ---
 
@@ -917,7 +889,7 @@ Update this table as blocks ship.
 | 15 | People list + detail | ☑ | [[2026-05-10 - block-15-people-list-and-detail]] |
 | 16 | Task detail + inline pickers | ☑ | [[2026-05-10 - block-16-task-detail-and-pickers]] |
 | 17 | Mobile responsive layouts | ☑ | [[2026-05-10 - block-17-mobile-responsive-layouts]] |
-| 18 | AI integration + recurring + PWA polish + launch | ☐ |  |
+| 18 | Agent-native pivot + recurring cron + launch prep | ☑ | [[2026-05-10 - block-18-agent-native-pivot-and-launch-prep]] |
 
 ## Notes on running the plan
 
