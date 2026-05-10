@@ -912,7 +912,7 @@ Update this table as blocks ship.
 | 10 | Today screen | ☑ | [[2026-05-09 - block-10-today-screen]] |
 | 11 | Inbox + Quick Capture | ☑ | [[2026-05-10 - block-11-inbox-and-quick-capture]] |
 | 12 | Upcoming, Waiting, Review screens | ☑ | [[2026-05-10 - block-12-upcoming-waiting-review-screens]] |
-| 13 | Projects list + detail | ☐ |  |
+| 13 | Projects list + detail | ☑ | [[2026-05-10 - block-13-projects-list-and-detail]] |
 | 14 | Areas list + detail | ☐ |  |
 | 15 | People list + detail | ☐ |  |
 | 16 | Task detail + inline pickers | ☐ |  |
