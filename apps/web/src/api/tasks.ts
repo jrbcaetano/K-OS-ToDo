@@ -48,3 +48,19 @@ export function useTasksToday() {
     staleTime: 30_000,
   });
 }
+
+export function useTasksUpcoming() {
+  return useQuery({
+    queryKey: ['tasks', 'upcoming'],
+    queryFn: () => apiGet<{ tasks: TaskDto[] }>('/tasks/upcoming'),
+    staleTime: 30_000,
+  });
+}
+
+export function useTasksWaiting() {
+  return useQuery({
+    queryKey: ['tasks', 'waiting'],
+    queryFn: () => apiGet<{ tasks: TaskDto[] }>('/tasks/waiting'),
+    staleTime: 30_000,
+  });
+}
