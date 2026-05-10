@@ -914,7 +914,7 @@ Update this table as blocks ship.
 | 12 | Upcoming, Waiting, Review screens | ☑ | [[2026-05-10 - block-12-upcoming-waiting-review-screens]] |
 | 13 | Projects list + detail | ☑ | [[2026-05-10 - block-13-projects-list-and-detail]] |
 | 14 | Areas list + detail | ☑ | [[2026-05-10 - block-14-areas-list-and-detail]] |
-| 15 | People list + detail | ☐ |  |
+| 15 | People list + detail | ☑ | [[2026-05-10 - block-15-people-list-and-detail]] |
 | 16 | Task detail + inline pickers | ☐ |  |
 | 17 | Mobile responsive layouts | ☐ |  |
 | 18 | AI integration + recurring + PWA polish + launch | ☐ |  |
