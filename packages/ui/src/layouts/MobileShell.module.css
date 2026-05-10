@@ -1,0 +1,89 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.topbar {
+  height: 44px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  flex-shrink: 0;
+  background: var(--paper);
+}
+.topbarTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+.topbarActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 14px 14px 80px;
+}
+
+.tabbar {
+  height: 60px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--paper);
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font: inherit;
+  text-decoration: none;
+  font-family: inherit;
+}
+.tab:hover,
+.tabActive {
+  color: var(--ink);
+}
+.tabActive .iconWrap {
+  color: var(--accent-ink);
+}
+.iconWrap {
+  display: inline-flex;
+}
+
+.captureBtn {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  margin-bottom: 4px;
+}
+.captureLabel {
+  font-size: 10px;
+}

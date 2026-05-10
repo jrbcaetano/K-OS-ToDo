@@ -916,7 +916,7 @@ Update this table as blocks ship.
 | 14 | Areas list + detail | ☑ | [[2026-05-10 - block-14-areas-list-and-detail]] |
 | 15 | People list + detail | ☑ | [[2026-05-10 - block-15-people-list-and-detail]] |
 | 16 | Task detail + inline pickers | ☑ | [[2026-05-10 - block-16-task-detail-and-pickers]] |
-| 17 | Mobile responsive layouts | ☐ |  |
+| 17 | Mobile responsive layouts | ☑ | [[2026-05-10 - block-17-mobile-responsive-layouts]] |
 | 18 | AI integration + recurring + PWA polish + launch | ☐ |  |
 
 ## Notes on running the plan

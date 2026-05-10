@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
 import { createRootRoute, Link, Outlet, useRouterState } from '@tanstack/react-router';
-import { AppShell, Sidebar, TweaksPanel, Icon } from '@k-os/ui';
-import type { SidebarItemRenderProps } from '@k-os/ui';
+import {
+  AppShell,
+  MobileShell,
+  Sidebar,
+  TweaksPanel,
+  Icon,
+  useViewport,
+  type MobileTab,
+  type MobileTabRenderProps,
+  type SidebarItemRenderProps,
+} from '@k-os/ui';
 import { NAV_GROUPS, type NavItem } from '@k-os/core';
 import { QuickCapture } from '../components/QuickCapture';
 
@@ -26,6 +35,21 @@ const DEMO_USER = {
   meta: 'Boxfusion · Praesto PT',
 };
 
+const MOBILE_TABS: MobileTab[] = [
+  { id: 'today', label: 'Today', icon: 'today' },
+  { id: 'inbox', label: 'Inbox', icon: 'inbox' },
+  { id: 'capture', label: 'Capture', icon: 'plus', capture: true },
+  { id: 'people', label: 'People', icon: 'people' },
+  { id: 'more', label: 'More', icon: 'moreH' },
+];
+
+const MOBILE_TAB_PATHS: Record<string, string> = {
+  today: '/',
+  inbox: '/inbox',
+  people: '/people',
+  more: '/review',
+};
+
 function renderItem(item: NavItem, props: SidebarItemRenderProps) {
   return (
     <Link to={item.path} className={props.className}>
@@ -34,9 +58,20 @@ function renderItem(item: NavItem, props: SidebarItemRenderProps) {
   );
 }
 
+function renderTab(tab: MobileTab, props: MobileTabRenderProps) {
+  const path = MOBILE_TAB_PATHS[tab.id] ?? '/';
+  return (
+    <Link to={path} className={props.className}>
+      {props.children}
+    </Link>
+  );
+}
+
 function RootLayout() {
   const { location } = useRouterState();
   const [qcOpen, setQcOpen] = useState(false);
+  const viewport = useViewport();
+  const isMobile = viewport === 'mobile';
 
   const activeId =
     NAV_GROUPS.flatMap((g) => g.items).find((i) =>
@@ -45,7 +80,6 @@ function RootLayout() {
 
   const title = TITLES[activeId] ?? 'K-OS';
 
-  // Global ⌘K / Ctrl+K opens Quick Capture.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -56,6 +90,24 @@ function RootLayout() {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, []);
+
+  if (isMobile) {
+    return (
+      <>
+        <MobileShell
+          title={title}
+          topbarActions={<TweaksPanel />}
+          tabs={MOBILE_TABS}
+          activeId={activeId}
+          onCapture={() => setQcOpen(true)}
+          renderTab={renderTab}
+        >
+          <Outlet />
+        </MobileShell>
+        <QuickCapture open={qcOpen} onClose={() => setQcOpen(false)} />
+      </>
+    );
+  }
 
   return (
     <>

@@ -38,3 +38,9 @@ export type { AppShellProps } from './layouts/AppShell';
 
 export { Sidebar } from './layouts/Sidebar';
 export type { SidebarProps, SidebarUser, SidebarItemRenderProps } from './layouts/Sidebar';
+
+export { MobileShell } from './layouts/MobileShell';
+export type { MobileShellProps, MobileTab, MobileTabRenderProps } from './layouts/MobileShell';
+
+export { useViewport } from './hooks/useViewport';
+export type { Viewport } from './hooks/useViewport';
