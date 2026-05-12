@@ -24,7 +24,7 @@ import {
   type AuthVariables,
 } from '../middleware/auth';
 import { getWorkspaceId } from '../middleware/workspace';
-import { emitTaskEvent } from './_tasks-helpers';
+import { emitTaskEvent, selectTasksWithRefs, shapeTaskRow } from './_tasks-helpers';
 
 const app = new Hono<{ Variables: AuthVariables }>();
 
@@ -56,9 +56,7 @@ const triageSchema = z.object({
 app.get('/', async (c) => {
   const workspaceId = getWorkspaceId(c);
   const db = getDb();
-  const rows = await db
-    .select()
-    .from(tasks)
+  const rows = await selectTasksWithRefs(db)
     .where(
       and(
         eq(tasks.workspaceId, workspaceId),
@@ -68,7 +66,7 @@ app.get('/', async (c) => {
     )
     .orderBy(desc(tasks.createdAt))
     .limit(500);
-  return c.json({ tasks: rows });
+  return c.json({ tasks: rows.map(shapeTaskRow) });
 });
 
 app.post('/capture', async (c) => {

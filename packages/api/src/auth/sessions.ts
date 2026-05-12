@@ -17,6 +17,9 @@ import { randomBytes, createHash } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import { sessions, type Db } from '@k-os/db';
 
+/** Either the top-level Db or a `db.transaction(...)` handle. */
+type SessionClient = Db | Parameters<Parameters<Db['transaction']>[0]>[0];
+
 // Sliding window: each validation refreshes the expiry by this much.
 export const SESSION_IDLE_LIFETIME_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 
@@ -61,7 +64,7 @@ export function hashSessionToken(token: string): string {
  * and return the raw token + the row.
  */
 export async function createSession(
-  db: Db,
+  db: SessionClient,
   { userId, userAgent = null, ipHash = null }: CreateSessionInput,
 ): Promise<CreatedSession> {
   const token = generateSessionToken();

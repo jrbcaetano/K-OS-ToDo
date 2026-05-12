@@ -50,7 +50,11 @@ export function QuickCapture({ open, onClose }: QuickCaptureProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const capture = useCapture();
 
-  // Reset on open / close
+  // Reset on open / close. We only depend on `open` — the `capture` object
+  // returned by useMutation is a fresh reference on every render, so listing
+  // it here would loop the effect indefinitely (setState → re-render → new
+  // capture object → effect re-runs). Its `.reset()` method is stable enough
+  // to call from inside.
   useEffect(() => {
     if (open) {
       setTitle('');
@@ -60,7 +64,8 @@ export function QuickCapture({ open, onClose }: QuickCaptureProps) {
       capture.reset();
       requestAnimationFrame(() => inputRef.current?.focus());
     }
-  }, [open, capture]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const filteredKinds = useMemo(() => {
     if (!menu) return [];

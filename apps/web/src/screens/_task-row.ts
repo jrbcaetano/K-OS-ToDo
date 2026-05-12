@@ -26,6 +26,13 @@ export function toRowModel(t: TaskDto, opts: ToRowOptions = {}): TaskRowModel {
     status: t.status,
     priority: t.priority,
     done: t.status === 'done',
+    context: t.context ?? null,
+    // Fall back to area name when the task is filed under an area rather
+    // than a project (the design's "proj chip" reads either as the parent).
+    projectName: t.project?.name ?? t.area?.name ?? null,
+    person: t.person
+      ? { name: t.person.name, initials: t.person.initials, color: t.person.color }
+      : null,
     dateLabel: chooseDateLabel(t),
     dateState: chooseDateState(t),
     waitingSince: opts.showWaitingSince ? formatWaitingSince(t.createdAt) : null,

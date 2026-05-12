@@ -34,6 +34,20 @@ export const app = new Hono<{ Variables: AuthVariables }>().basePath('/api');
 app.use('*', logger());
 app.use('*', cors());
 
+// Surface uncaught errors as JSON with a server-side stack log. Without this
+// Hono returns a bare "Internal Server Error" string and nothing reaches the
+// client console — making 500s opaque during local dev.
+app.onError((err, c) => {
+  console.error('[api:onError]', err);
+  return c.json(
+    {
+      error: 'internal_error',
+      message: err instanceof Error ? err.message : String(err),
+    },
+    500,
+  );
+});
+
 app.get('/', (c) => c.json({ name: 'k-os-api', status: 'ok' }));
 app.get('/health', (c) => c.json({ ok: true }));
 

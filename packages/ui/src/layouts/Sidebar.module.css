@@ -72,6 +72,13 @@
   text-align: left;
   width: 100%;
   font: inherit;
+  text-decoration: none;
+}
+.item:hover,
+.item:focus,
+.item:active,
+.item:visited {
+  text-decoration: none;
 }
 .item:hover {
   background: var(--paper-3);

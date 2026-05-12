@@ -26,7 +26,6 @@ import {
   isNull,
   lt,
   gte,
-  getTableColumns,
 } from 'drizzle-orm';
 import { z } from 'zod';
 import {
@@ -36,8 +35,10 @@ import {
   tags,
   projects,
   areas,
+  people,
   getDb,
 } from '@k-os/db';
+import { sql } from 'drizzle-orm';
 import { TASK_STATUSES, TASK_PRIORITIES, SOURCE_KINDS } from '@k-os/core';
 import {
   actorEventStamp,
@@ -51,10 +52,11 @@ import {
   activeTasksWhere,
   diffTaskAuditedFields,
   emitTaskEvent,
+  selectTasksWithRefs,
+  shapeTaskRow as shape,
 } from './_tasks-helpers';
 
 const app = new Hono<{ Variables: AuthVariables }>();
-const taskCols = getTableColumns(tasks);
 
 // ---------------------------------------------------------------------------
 // Schemas
@@ -107,14 +109,33 @@ app.get('/', async (c) => {
   const projectId = c.req.query('project_id');
   const areaId = c.req.query('area_id');
   const personId = c.req.query('person_id');
-  const archived = c.req.query('archived') === 'true';
+  // `scope` is the new way to control archived/done filtering. Legacy
+  // `archived=true` is still honoured for callers that haven't migrated.
+  const rawScope = c.req.query('scope');
+  const legacyArchived = c.req.query('archived') === 'true';
+  const scope: 'open' | 'all' | 'archived' | 'done' = legacyArchived
+    ? 'archived'
+    : rawScope === 'all' || rawScope === 'archived' || rawScope === 'done'
+      ? rawScope
+      : 'open';
+  // Default sort: by due date asc with NULLs last so undated tasks bubble to
+  // the bottom. Clients that want creation order can pass ?sort=created.
+  const sort = c.req.query('sort') === 'created' ? 'created' : 'due';
 
   const conditions = [eq(tasks.workspaceId, workspaceId)];
-  if (archived) {
-    conditions.push(isNotNull(tasks.archivedAt));
-  } else {
+  if (scope === 'open') {
     conditions.push(isNull(tasks.archivedAt));
+    // Inbox tasks are "open" too — they're untriaged but unfinished. Done
+    // tasks are filtered out so this view is the active backlog.
+    conditions.push(sql`${tasks.status} != 'done'`);
+  } else if (scope === 'archived') {
+    conditions.push(isNotNull(tasks.archivedAt));
+  } else if (scope === 'done') {
+    conditions.push(isNull(tasks.archivedAt));
+    conditions.push(eq(tasks.status, 'done'));
   }
+  // 'all' applies no archived/done filter.
+
   if (status && (TASK_STATUSES as readonly string[]).includes(status)) {
     conditions.push(eq(tasks.status, status as (typeof TASK_STATUSES)[number]));
   }
@@ -122,13 +143,17 @@ app.get('/', async (c) => {
   if (areaId) conditions.push(eq(tasks.areaId, areaId));
   if (personId) conditions.push(eq(tasks.personId, personId));
 
-  const rows = await db
-    .select()
-    .from(tasks)
+  // NULLS LAST keeps undated tasks at the bottom under due-date sort.
+  const order =
+    sort === 'due'
+      ? [sql`${tasks.dueAt} asc nulls last`, desc(tasks.createdAt)]
+      : [desc(tasks.createdAt)];
+
+  const rows = await selectTasksWithRefs(db)
     .where(and(...conditions))
-    .orderBy(desc(tasks.createdAt))
+    .orderBy(...order)
     .limit(500);
-  return c.json({ tasks: rows });
+  return c.json({ tasks: rows.map(shape) });
 });
 
 // Filtered views ------------------------------------------------------------
@@ -138,11 +163,7 @@ app.get('/today', async (c) => {
   const db = getDb();
   const todayEnd = endOfToday();
 
-  const rows = await db
-    .select(taskCols)
-    .from(tasks)
-    .leftJoin(projects, eq(projects.id, tasks.projectId))
-    .leftJoin(areas, eq(areas.id, tasks.areaId))
+  const rows = await selectTasksWithRefs(db)
     .where(
       and(
         activeTasksWhere(workspaceId),
@@ -166,7 +187,7 @@ app.get('/today', async (c) => {
       (t.scheduledAt && t.scheduledAt.getTime() <= todayEnd.getTime())
     );
   });
-  return c.json({ tasks: out });
+  return c.json({ tasks: out.map(shape) });
 });
 
 app.get('/upcoming', async (c) => {
@@ -175,11 +196,7 @@ app.get('/upcoming', async (c) => {
   const todayStart = startOfToday();
   const horizon = new Date(todayStart.getTime() + 1000 * 60 * 60 * 24 * 30);
 
-  const rows = await db
-    .select(taskCols)
-    .from(tasks)
-    .leftJoin(projects, eq(projects.id, tasks.projectId))
-    .leftJoin(areas, eq(areas.id, tasks.areaId))
+  const rows = await selectTasksWithRefs(db)
     .where(
       and(
         activeTasksWhere(workspaceId),
@@ -190,18 +207,14 @@ app.get('/upcoming', async (c) => {
     )
     .orderBy(asc(tasks.scheduledAt))
     .limit(500);
-  return c.json({ tasks: rows });
+  return c.json({ tasks: rows.map(shape) });
 });
 
 app.get('/waiting', async (c) => {
   const workspaceId = getWorkspaceId(c);
   const db = getDb();
 
-  const rows = await db
-    .select(taskCols)
-    .from(tasks)
-    .leftJoin(projects, eq(projects.id, tasks.projectId))
-    .leftJoin(areas, eq(areas.id, tasks.areaId))
+  const rows = await selectTasksWithRefs(db)
     .where(
       and(
         activeTasksWhere(workspaceId),
@@ -210,7 +223,88 @@ app.get('/waiting', async (c) => {
     )
     .orderBy(asc(tasks.reviewAt))
     .limit(500);
-  return c.json({ tasks: rows });
+  return c.json({ tasks: rows.map(shape) });
+});
+
+// Sidebar counts ------------------------------------------------------------
+// One round-trip aggregation so the sidebar badges don't trigger N requests.
+
+app.get('/counts', async (c) => {
+  const workspaceId = getWorkspaceId(c);
+  const db = getDb();
+  const todayEnd = endOfToday();
+
+  const [row] = await db
+    .select({
+      inbox: sql<number>`count(*) filter (where status = 'inbox' and archived_at is null)`,
+      // All open tasks — non-archived and not yet done. Drives the "All
+      // tasks" sidebar badge and is what /all defaults to.
+      all: sql<number>`count(*) filter (where archived_at is null and status != 'done')`,
+      today: sql<number>`count(*) filter (
+        where archived_at is null
+        and (
+          (status in ('next','scheduled') and (
+            (due_at is not null and due_at <= ${todayEnd}) or
+            (scheduled_at is not null and scheduled_at <= ${todayEnd})
+          )) or
+          (status in ('waiting','delegated') and review_at is not null and review_at <= ${todayEnd})
+        )
+      )`,
+      overdue: sql<number>`count(*) filter (
+        where archived_at is null
+        and status in ('next','scheduled')
+        and due_at is not null and due_at < ${startOfToday()}
+      )`,
+      upcoming: sql<number>`count(*) filter (
+        where archived_at is null
+        and status in ('next','scheduled')
+        and scheduled_at is not null
+        and scheduled_at > ${todayEnd}
+      )`,
+      waiting: sql<number>`count(*) filter (
+        where archived_at is null and status in ('waiting','delegated')
+      )`,
+      waitingStale: sql<number>`count(*) filter (
+        where archived_at is null
+        and status in ('waiting','delegated')
+        and review_at is not null and review_at < ${startOfToday()}
+      )`,
+      review: sql<number>`count(*) filter (
+        where archived_at is null and status = 'done' and completed_at >= ${new Date(
+          startOfToday().getTime() - 7 * 24 * 3600 * 1000,
+        )}
+      )`,
+    })
+    .from(tasks)
+    .where(eq(tasks.workspaceId, workspaceId));
+
+  // Pull non-task counts in parallel.
+  const [projectCount] = await db
+    .select({ n: sql<number>`count(*)` })
+    .from(projects)
+    .where(and(eq(projects.workspaceId, workspaceId), isNull(projects.archivedAt)));
+  const [areaCount] = await db
+    .select({ n: sql<number>`count(*)` })
+    .from(areas)
+    .where(and(eq(areas.workspaceId, workspaceId), isNull(areas.archivedAt)));
+  const [peopleCount] = await db
+    .select({ n: sql<number>`count(*)` })
+    .from(people)
+    .where(and(eq(people.workspaceId, workspaceId), isNull(people.archivedAt)));
+
+  return c.json({
+    today: Number(row?.today ?? 0),
+    todayOverdue: Number(row?.overdue ?? 0),
+    inbox: Number(row?.inbox ?? 0),
+    upcoming: Number(row?.upcoming ?? 0),
+    waiting: Number(row?.waiting ?? 0),
+    waitingStale: Number(row?.waitingStale ?? 0),
+    all: Number(row?.all ?? 0),
+    review: Number(row?.review ?? 0),
+    projects: Number(projectCount?.n ?? 0),
+    areas: Number(areaCount?.n ?? 0),
+    people: Number(peopleCount?.n ?? 0),
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -222,12 +316,10 @@ app.get('/:id', async (c) => {
   const db = getDb();
   const id = c.req.param('id');
 
-  const [task] = await db
-    .select()
-    .from(tasks)
+  const [row] = await selectTasksWithRefs(db)
     .where(and(eq(tasks.id, id), eq(tasks.workspaceId, workspaceId)))
     .limit(1);
-  if (!task) return c.json({ error: 'not_found' }, 404);
+  if (!row) return c.json({ error: 'not_found' }, 404);
 
   const linkedTags = await db
     .select({ id: tags.id, name: tags.name })
@@ -242,7 +334,7 @@ app.get('/:id', async (c) => {
     .orderBy(desc(taskEvents.createdAt))
     .limit(50);
 
-  return c.json({ task, tags: linkedTags, events });
+  return c.json({ task: shape(row), tags: linkedTags, events });
 });
 
 app.get('/:id/events', async (c) => {

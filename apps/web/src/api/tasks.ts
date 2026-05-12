@@ -39,6 +39,33 @@ export interface TaskDto {
   waitingFor: string | null;
   createdBy: string;
   createdAt: string;
+  // Embedded refs from list endpoints — null if no FK or not joined.
+  context?: { label: string; color: string; slug: string | null } | null;
+  project?: { id: string | null; name: string } | null;
+  area?: { id: string | null; name: string } | null;
+  person?: { id: string | null; name: string; initials: string; color: string } | null;
+}
+
+export interface CountsDto {
+  today: number;
+  todayOverdue: number;
+  inbox: number;
+  upcoming: number;
+  waiting: number;
+  waitingStale: number;
+  all: number;
+  review: number;
+  projects: number;
+  areas: number;
+  people: number;
+}
+
+export function useCounts() {
+  return useQuery({
+    queryKey: ['tasks', 'counts'],
+    queryFn: () => apiGet<CountsDto>('/tasks/counts'),
+    staleTime: 30_000,
+  });
 }
 
 export interface TaskEventDto {
@@ -77,6 +104,17 @@ export function useTasksWaiting() {
   return useQuery({
     queryKey: ['tasks', 'waiting'],
     queryFn: () => apiGet<{ tasks: TaskDto[] }>('/tasks/waiting'),
+    staleTime: 30_000,
+  });
+}
+
+export type TasksScope = 'open' | 'all' | 'archived' | 'done';
+
+export function useTasksAll(scope: TasksScope = 'open') {
+  return useQuery({
+    queryKey: ['tasks', 'all', scope],
+    queryFn: () =>
+      apiGet<{ tasks: TaskDto[] }>(`/tasks?scope=${encodeURIComponent(scope)}&sort=due`),
     staleTime: 30_000,
   });
 }

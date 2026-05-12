@@ -13,12 +13,14 @@
  *     `field` value in the payload is snake_case (matches the schema).
  */
 
-import { and, eq, isNull, or, sql, type SQL } from 'drizzle-orm';
+import { and, eq, isNull, or, sql, getTableColumns, type SQL } from 'drizzle-orm';
 import {
   tasks,
   taskEvents,
   projects,
   areas,
+  contexts,
+  people,
   type Db,
 } from '@k-os/db';
 import {
@@ -121,3 +123,68 @@ function sameValue(a: unknown, b: unknown): boolean {
 
 // Re-export so route files only need to import from this module.
 export { sql };
+
+// ---------------------------------------------------------------------------
+// Enriched task list — joins context/project/area/person so list endpoints
+// return rich rows in a single query. Shared between /tasks, /tasks/:id,
+// /tasks/today|upcoming|waiting and /inbox.
+// ---------------------------------------------------------------------------
+
+const taskCols = getTableColumns(tasks);
+
+const refCols = {
+  contextLabel: contexts.label,
+  contextColor: contexts.color,
+  contextSlug: contexts.slug,
+  projectName: projects.name,
+  areaName: areas.name,
+  personName: people.name,
+  personInitials: people.initials,
+  personColor: people.color,
+};
+
+/** Run a select(taskCols + refCols) with the four left joins applied. */
+export function selectTasksWithRefs(db: Db) {
+  return db
+    .select({ ...taskCols, ...refCols })
+    .from(tasks)
+    .leftJoin(projects, eq(projects.id, tasks.projectId))
+    .leftJoin(areas, eq(areas.id, tasks.areaId))
+    .leftJoin(contexts, eq(contexts.id, tasks.contextId))
+    .leftJoin(people, eq(people.id, tasks.personId));
+}
+
+export type EnrichedTaskRow = Awaited<ReturnType<typeof selectTasksWithRefs>>[number];
+
+/** Shape the joined columns into nested {context, project, area, person} payload. */
+export function shapeTaskRow(row: EnrichedTaskRow) {
+  const {
+    contextLabel,
+    contextColor,
+    contextSlug,
+    projectName,
+    areaName,
+    personName,
+    personInitials,
+    personColor,
+    ...task
+  } = row;
+  return {
+    ...task,
+    context:
+      contextLabel && contextColor
+        ? { label: contextLabel, color: contextColor, slug: contextSlug ?? null }
+        : null,
+    project: projectName ? { id: task.projectId, name: projectName } : null,
+    area: areaName ? { id: task.areaId, name: areaName } : null,
+    person:
+      personName && personInitials && personColor
+        ? {
+            id: task.personId,
+            name: personName,
+            initials: personInitials,
+            color: personColor,
+          }
+        : null,
+  };
+}

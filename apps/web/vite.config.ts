@@ -27,9 +27,12 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // Forward /api/* to the locally-running Hono dev server in apps/web/api/
-      // (Vercel-style local dev would use `vercel dev`; this proxy is for plain `vite dev`)
-      // For now, plain Vite — the API isn't wired into local dev until scaffolding lands.
+      // Forward /api/* to the local Hono dev server (packages/api dev script, port 3000).
+      // Production uses Vercel Serverless Functions (apps/web/api/[[...route]].ts).
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
     },
   },
   build: {

@@ -37,6 +37,8 @@ export const ICON_PATHS = {
   moon: 'M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z',
   inboxAlt:
     'M22 12h-6l-2 3h-4l-2-3H2M5.5 5h13L22 12v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6L5.5 5z',
+  // List-bullets — used for the "All tasks" view in the sidebar.
+  list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
 } as const;
 
 export type IconName = keyof typeof ICON_PATHS;

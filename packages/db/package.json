@@ -11,19 +11,24 @@
     "./client": "./src/client.ts"
   },
   "scripts": {
-    "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate",
-    "studio": "drizzle-kit studio",
+    "generate": "dotenv -e ../../.env -- drizzle-kit generate",
+    "migrate": "dotenv -e ../../.env -- drizzle-kit migrate",
+    "studio": "dotenv -e ../../.env -- drizzle-kit studio",
+    "seed": "dotenv -e ../../.env -- tsx src/seed.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@k-os/core": "workspace:*",
     "@neondatabase/serverless": "^0.10.4",
-    "drizzle-orm": "^0.36.4"
+    "drizzle-orm": "^0.36.4",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
+    "@types/ws": "^8.18.1",
+    "dotenv-cli": "^11.0.0",
     "drizzle-kit": "^0.28.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.6.3"
   }
 }

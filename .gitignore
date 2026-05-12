@@ -56,3 +56,9 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
+
+# TanStack Router local cache (route-tree generation scratch space)
+.tanstack/
+
+# curl cookie jars used during manual API testing
+cookies.txt

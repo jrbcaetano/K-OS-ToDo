@@ -9,15 +9,16 @@
  *
  * Two callable forms:
  *   - `createWorkspaceForUser(db, ...)` — opens its own transaction. Use
- *     from top-level callers like the signup route.
+ *     from top-level callers like the signup route. The DB client uses the
+ *     neon-serverless (WebSocket) driver so real transactions work.
  *   - `createWorkspaceForUserTx(tx, ...)` — assumes the caller already holds
- *     a transaction. Use from inside `db.transaction(...)`. neon-http does
- *     not support nested transactions (it's a single HTTP round-trip), so
- *     the inner form is required when composing with another tx.
+ *     a transaction. Use when composing with another tx; pass `tx` to keep
+ *     the work atomic.
  *
  * Block 4 will extend the inner form to seed the 6 default contexts.
  */
 
+import { eq } from 'drizzle-orm';
 import { workspaces, workspaceMembers, contexts, type Db } from '@k-os/db';
 import { DEFAULT_CONTEXTS } from '@k-os/core';
 
@@ -75,4 +76,27 @@ export async function createWorkspaceForUser(
   input: CreateWorkspaceForUserInput,
 ): Promise<CreatedWorkspace> {
   return db.transaction((tx) => createWorkspaceForUserTx(tx, input));
+}
+
+/**
+ * Make sure `userId` has at least one workspace. If they already do, return
+ * the existing one untouched. If not (e.g. an earlier signup committed the
+ * user row but failed before the workspace tx ran), create the default
+ * workspace + member + contexts now.
+ *
+ * Safe to call on every login as a self-heal step.
+ */
+export async function ensureWorkspaceForUser(
+  db: Db,
+  userId: string,
+): Promise<CreatedWorkspace> {
+  const [existing] = await db
+    .select({ id: workspaces.id, name: workspaces.name })
+    .from(workspaceMembers)
+    .innerJoin(workspaces, eq(workspaces.id, workspaceMembers.workspaceId))
+    .where(eq(workspaceMembers.userId, userId))
+    .limit(1);
+  if (existing) return existing;
+
+  return createWorkspaceForUser(db, { userId });
 }

@@ -24,38 +24,46 @@
   margin-top: 4px;
 }
 
+/* KPI grid — one visual unit with 1px hairlines between cells. */
 .kpiGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
   margin-bottom: 24px;
 }
 .kpi {
-  border: 1px solid var(--line-soft);
-  border-radius: 8px;
+  background: var(--paper);
   padding: 14px 16px;
-  background: var(--paper-2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .kpiLabel {
-  font-size: 11px;
-  color: var(--ink-3);
-  font-family: var(--font-mono);
+  font-size: 10.5px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 4px;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  font-weight: 500;
 }
 .kpiValue {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum';
+  line-height: 1;
 }
 .kpiCritical {
   color: var(--pri-critical);
 }
 .kpiMeta {
   font-size: 11px;
-  color: var(--ink-4);
-  margin-top: 2px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
 }
 .kpiAlert {
   color: var(--pri-critical);

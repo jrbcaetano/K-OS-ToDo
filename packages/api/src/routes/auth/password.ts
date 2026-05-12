@@ -19,7 +19,7 @@ import {
   PasswordTooShortError,
   MIN_PASSWORD_LENGTH,
 } from '../../auth/password';
-import { createWorkspaceForUser } from '../../auth/workspace';
+import { createWorkspaceForUserTx, ensureWorkspaceForUser } from '../../auth/workspace';
 import { createSession, revokeSession } from '../../auth/sessions';
 import {
   setSessionCookie,
@@ -45,16 +45,27 @@ app.post('/signup', rateLimit('signup'), async (c) => {
   }
 
   const db = getDb();
+  const meta = sessionRequestMeta(c);
   try {
-    const user = await signup(db, parsed.data);
-    await createWorkspaceForUser(db, { userId: user.id });
-
-    const meta = sessionRequestMeta(c);
-    const { token } = await createSession(db, { userId: user.id, ...meta });
-    setSessionCookie(c, token);
+    // Atomic: user + workspace (+member +contexts) + session all commit
+    // together, or none of them do. Prevents the "user without workspace"
+    // orphan state that would otherwise 401 every protected route.
+    const result = await db.transaction(async (tx) => {
+      const user = await signup(tx, parsed.data);
+      await createWorkspaceForUserTx(tx, { userId: user.id });
+      const { token } = await createSession(tx, { userId: user.id, ...meta });
+      return { user, token };
+    });
+    setSessionCookie(c, result.token);
 
     return c.json(
-      { user: { id: user.id, email: user.email, displayName: user.displayName } },
+      {
+        user: {
+          id: result.user.id,
+          email: result.user.email,
+          displayName: result.user.displayName,
+        },
+      },
       201,
     );
   } catch (err) {
@@ -85,6 +96,11 @@ app.post('/login', rateLimit('login'), async (c) => {
   if (!user) {
     return c.json({ error: 'invalid_credentials' }, 401);
   }
+
+  // Self-heal: if a previous signup wrote the user row but failed before the
+  // workspace tx (e.g. the old neon-http transaction error), the user has no
+  // workspace and every protected route 401s. Make sure they have one now.
+  await ensureWorkspaceForUser(db, user.id);
 
   const meta = sessionRequestMeta(c);
   const { token } = await createSession(db, { userId: user.id, ...meta });

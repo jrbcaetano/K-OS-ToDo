@@ -15,11 +15,15 @@
 import { SectionHead, TaskRow, type TaskRowModel } from '@k-os/ui';
 import { useTasksToday, type TaskDto } from '../api/tasks';
 import { useOpenTask } from './_use-open-task';
+import { useSession } from '../api/auth-hooks';
+import { toRowModel } from './_task-row';
 import styles from './Today.module.css';
 
 export function TodayScreen() {
   const query = useTasksToday();
   const open = useOpenTask();
+  const session = useSession();
+  const firstName = session.data?.user.displayName.split(' ')[0] ?? null;
 
   if (query.isLoading) {
     return <div className={styles.loading}>Loading…</div>;
@@ -47,7 +51,7 @@ export function TodayScreen() {
       <div className={styles.greeting}>
         <div>
           <div className={styles.dateline}>{dateline}</div>
-          <h2 className={styles.heading}>Good day.</h2>
+          <h2 className={styles.heading}>{greetingFor(firstName)}</h2>
           <div className={styles.subline}>
             {kpis.due} due · {kpis.followups} follow-ups · {kpis.overdue} overdue
           </div>
@@ -167,50 +171,6 @@ function bucket(tasks: TaskDto[]): Buckets {
   return { overdue, due, followups, scheduled };
 }
 
-function toRowModel(t: TaskDto): TaskRowModel {
-  return {
-    id: t.id,
-    title: t.title,
-    status: t.status,
-    priority: t.priority,
-    done: t.status === 'done',
-    dateLabel: chooseDateLabel(t),
-    dateState: chooseDateState(t),
-    waitingSince: null,
-  };
-}
-
-function chooseDateLabel(t: TaskDto): string | null {
-  if (t.status === 'waiting' || t.status === 'delegated') {
-    return t.reviewAt ? formatShortDate(new Date(t.reviewAt)) : null;
-  }
-  if (t.dueAt) return formatShortDate(new Date(t.dueAt));
-  if (t.scheduledAt) return formatShortDate(new Date(t.scheduledAt));
-  return null;
-}
-
-function chooseDateState(t: TaskDto): 'overdue' | 'today' | 'normal' {
-  const target = t.dueAt ?? t.scheduledAt ?? t.reviewAt;
-  if (!target) return 'normal';
-  const ms = Date.parse(target);
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  const end = new Date();
-  end.setHours(23, 59, 59, 999);
-  if (ms < start.getTime()) return 'overdue';
-  if (ms <= end.getTime()) return 'today';
-  return 'normal';
-}
-
-function formatShortDate(d: Date): string {
-  const today = new Date();
-  if (d.toDateString() === today.toDateString()) return 'Today';
-  const tomorrow = new Date(today);
-  tomorrow.setDate(today.getDate() + 1);
-  if (d.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
-  return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
-}
-
 function formatDateline(d: Date): string {
   return d
     .toLocaleDateString(undefined, {
@@ -220,4 +180,11 @@ function formatDateline(d: Date): string {
       year: 'numeric',
     })
     .replace(',', ' ·');
+}
+
+/** Time-of-day-aware greeting that matches the design's "Good morning, Joao." copy. */
+function greetingFor(firstName: string | null): string {
+  const hour = new Date().getHours();
+  const part = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+  return firstName ? `Good ${part}, ${firstName}.` : `Good ${part}.`;
 }

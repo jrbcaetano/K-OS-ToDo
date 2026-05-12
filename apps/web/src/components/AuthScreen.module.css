@@ -1,0 +1,141 @@
+.shell {
+  min-height: 100vh;
+  background: var(--paper);
+  display: grid;
+  place-items: center;
+  padding: 40px 20px;
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.brandMark {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.brandTagline {
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0 0 2px 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--ink-3);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.input {
+  height: 34px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 120ms ease;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input::placeholder {
+  color: var(--ink-4);
+}
+
+.error {
+  font-size: 12px;
+  color: var(--pri-critical);
+  background: color-mix(in srgb, var(--pri-critical) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pri-critical) 25%, transparent);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  line-height: 1.4;
+}
+
+.submit {
+  height: 36px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: white;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity 120ms ease, background-color 120ms ease;
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--accent-ink);
+  border-color: var(--accent-ink);
+}
+
+.submit:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+.alt {
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.alt a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.alt a:hover {
+  text-decoration: underline;
+}

@@ -9,10 +9,12 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "dev": "tsx watch --env-file=../../.env src/dev.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@hono/node-server": "^2.0.2",
     "@k-os/core": "workspace:*",
     "@k-os/db": "workspace:*",
     "arctic": "^2.2.1",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@types/nodemailer": "^6.4.17",
+    "tsx": "^4.21.0",
     "typescript": "^5.6.3"
   }
 }

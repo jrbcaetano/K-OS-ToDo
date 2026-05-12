@@ -28,18 +28,19 @@ export const NAV_GROUPS: NavGroup[] = [
     group: 'Workspace',
     items: [
       { id: 'today', name: 'Today', path: '/', icon: 'today' },
-      { id: 'inbox', name: 'Inbox', path: '/inbox', icon: 'inbox' },
+      { id: 'inbox', name: 'Inbox', path: '/inbox', icon: 'inboxAlt' },
       { id: 'upcoming', name: 'Upcoming', path: '/upcoming', icon: 'upcoming' },
       { id: 'waiting', name: 'Waiting', path: '/waiting', icon: 'waiting' },
+      { id: 'all', name: 'All tasks', path: '/all', icon: 'list' },
+      { id: 'review', name: 'Review', path: '/review', icon: 'review' },
     ],
   },
   {
-    group: 'Outcomes',
+    group: 'Organize',
     items: [
       { id: 'projects', name: 'Projects', path: '/projects', icon: 'projects' },
       { id: 'areas', name: 'Areas', path: '/areas', icon: 'areas' },
       { id: 'people', name: 'People', path: '/people', icon: 'people' },
-      { id: 'review', name: 'Review', path: '/review', icon: 'review' },
     ],
   },
 ];
