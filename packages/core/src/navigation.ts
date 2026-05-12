@@ -27,8 +27,8 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     group: 'Workspace',
     items: [
-      { id: 'today', name: 'Today', path: '/', icon: 'today' },
       { id: 'inbox', name: 'Inbox', path: '/inbox', icon: 'inboxAlt' },
+      { id: 'today', name: 'Today', path: '/', icon: 'today' },
       { id: 'upcoming', name: 'Upcoming', path: '/upcoming', icon: 'upcoming' },
       { id: 'waiting', name: 'Waiting', path: '/waiting', icon: 'waiting' },
       { id: 'all', name: 'All tasks', path: '/all', icon: 'list' },
