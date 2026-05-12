@@ -17,6 +17,7 @@ import { eq } from 'drizzle-orm';
 import { createMiddleware } from 'hono/factory';
 import { getCookie } from 'hono/cookie';
 import { users, workspaceMembers, workspaces, getDb, type Db } from '@k-os/db';
+import type { PlatformRole } from '@k-os/core';
 import { validateSession } from '../auth/sessions';
 import { SESSION_COOKIE_NAME } from '../auth/cookies';
 import { validateAgentKey } from '../auth/agent-keys';
@@ -25,6 +26,7 @@ export interface AuthUser {
   id: string;
   email: string;
   displayName: string;
+  platformRole: PlatformRole | null;
 }
 
 export interface AuthSession {
@@ -138,17 +140,35 @@ export const requireAuth = createMiddleware<{ Variables: AuthVariables }>(
     if (result.kind !== 'valid') return c.json({ error: 'unauthorized' }, 401);
 
     const [user] = await db
-      .select({ id: users.id, email: users.email, displayName: users.displayName })
+      .select({
+        id: users.id,
+        email: users.email,
+        displayName: users.displayName,
+        approvalStatus: users.approvalStatus,
+        platformRole: users.platformRole,
+      })
       .from(users)
       .where(eq(users.id, result.session.userId))
       .limit(1);
     if (!user) return c.json({ error: 'unauthorized' }, 401);
 
+    // Defense in depth: a session minted before the user was rejected (or
+    // before approval was revoked) must not continue to work. Login already
+    // blocks these, so this only fires for sessions that pre-date the change.
+    if (user.approvalStatus !== 'approved') {
+      return c.json({ error: 'unauthorized' }, 401);
+    }
+
     const workspace = await loadUserActiveWorkspace(db, user.id);
     if (!workspace) return c.json({ error: 'unauthorized' }, 401);
 
     c.set('actor', { kind: 'user', userId: user.id });
-    c.set('user', user);
+    c.set('user', {
+      id: user.id,
+      email: user.email,
+      displayName: user.displayName,
+      platformRole: user.platformRole as PlatformRole | null,
+    });
     c.set('session', {
       tokenHash: result.session.tokenHash,
       expiresAt: result.session.expiresAt,
@@ -179,3 +199,19 @@ export function actorEventStamp(actor: Actor): {
 export function actorUserId(actor: Actor): string {
   return actor.kind === 'agent' ? actor.issuedByUserId : actor.userId;
 }
+
+/**
+ * Stack `requireAuth` first, then this, to gate a route on platform-admin.
+ * Agents are explicitly not platform admins — the role is a human concept
+ * (it grants access to the registration approval queue, which a service
+ * account should never be making decisions in).
+ */
+export const requirePlatformAdmin = createMiddleware<{ Variables: AuthVariables }>(
+  async (c, next) => {
+    const user = c.get('user');
+    if (!user || user.platformRole !== 'admin') {
+      return c.json({ error: 'forbidden' }, 403);
+    }
+    await next();
+  },
+);

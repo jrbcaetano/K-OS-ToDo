@@ -43,6 +43,33 @@ export type ArchiveReason = (typeof ARCHIVE_REASONS)[number];
 export const WORKSPACE_ROLES = ['owner', 'member', 'viewer'] as const;
 export type WorkspaceRole = (typeof WORKSPACE_ROLES)[number];
 
+/**
+ * Account-level gate for signup. New users land in 'pending' and cannot log
+ * in until a platform admin approves them. Rejected rows are kept (soft
+ * delete) for audit; the partial unique index on email lets the address be
+ * reused if you want to re-admit them later.
+ */
+export const APPROVAL_STATUSES = ['pending', 'approved', 'rejected'] as const;
+export type ApprovalStatus = (typeof APPROVAL_STATUSES)[number];
+
+/**
+ * Workspace-independent role. Currently only 'admin' — grants access to the
+ * platform settings (registration approval queue lives there).
+ */
+export const PLATFORM_ROLES = ['admin'] as const;
+export type PlatformRole = (typeof PLATFORM_ROLES)[number];
+
+/**
+ * Emails that are auto-approved + auto-admin on first signup, and promoted
+ * to admin via migration if they already exist. v1 keeps this hardcoded; a
+ * proper admin-management UI can come later when there's more than one.
+ */
+export const PLATFORM_ADMIN_EMAILS = ['joao@jrc.pt'] as const;
+export function isPlatformAdminEmail(email: string): boolean {
+  const lower = email.toLowerCase();
+  return PLATFORM_ADMIN_EMAILS.some((e) => e.toLowerCase() === lower);
+}
+
 export const ACTOR_KINDS = ['user', 'agent', 'system'] as const;
 export type ActorKind = (typeof ACTOR_KINDS)[number];
 

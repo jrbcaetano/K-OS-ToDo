@@ -22,6 +22,13 @@
       "when": 1778346988454,
       "tag": "0002_agent_keys",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1778346988455,
+      "tag": "0003_user_approval",
+      "breakpoints": true
     }
   ]
 }

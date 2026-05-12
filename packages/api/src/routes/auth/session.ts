@@ -39,11 +39,23 @@ app.get('/', async (c) => {
   }
 
   const [user] = await db
-    .select({ id: users.id, email: users.email, displayName: users.displayName })
+    .select({
+      id: users.id,
+      email: users.email,
+      displayName: users.displayName,
+      approvalStatus: users.approvalStatus,
+      platformRole: users.platformRole,
+    })
     .from(users)
     .where(eq(users.id, result.session.userId))
     .limit(1);
   if (!user) return c.json({ error: 'unauthorized' }, 401);
+  // A pending/rejected user shouldn't keep a usable session even if one
+  // was minted before the status changed. Treat it as logged-out.
+  if (user.approvalStatus !== 'approved') {
+    clearSessionCookie(c);
+    return c.json({ error: 'unauthorized' }, 401);
+  }
 
   const [workspace] = await db
     .select({
@@ -56,7 +68,15 @@ app.get('/', async (c) => {
     .where(eq(workspaceMembers.userId, user.id))
     .limit(1);
 
-  return c.json({ user, workspace: workspace ?? null });
+  return c.json({
+    user: {
+      id: user.id,
+      email: user.email,
+      displayName: user.displayName,
+      platformRole: user.platformRole,
+    },
+    workspace: workspace ?? null,
+  });
 });
 
 app.delete('/', async (c) => {

@@ -24,6 +24,7 @@ import {
   date,
   primaryKey,
   unique,
+  uniqueIndex,
   index,
   check,
   type AnyPgColumn,
@@ -48,15 +49,55 @@ const inList = (values: readonly string[]) =>
 // AUTH & STRUCTURAL
 // ============================================================================
 
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  email: text('email').notNull().unique(),
-  emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
-  passwordHash: text('password_hash'),
-  displayName: text('display_name').notNull(),
-  avatarColor: text('avatar_color'),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
+/**
+ * Users.
+ *
+ * `approvalStatus` gates login: a freshly signed-up user lands in `pending`
+ * and cannot log in until a platform admin approves them. Rejected users
+ * are kept (soft delete) so we have an audit trail; the partial unique
+ * index on `email` (only for non-rejected rows) means a rejected user's
+ * email can be re-registered later if you choose to re-admit them.
+ *
+ * `platformRole` is workspace-independent: today only 'admin', which grants
+ * access to platform-wide settings (registration approval lives there).
+ */
+export const users = pgTable(
+  'users',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    email: text('email').notNull(),
+    emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
+    passwordHash: text('password_hash'),
+    displayName: text('display_name').notNull(),
+    avatarColor: text('avatar_color'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    approvalStatus: text('approval_status', {
+      enum: ['pending', 'approved', 'rejected'],
+    })
+      .notNull()
+      .default('pending'),
+    approvedAt: timestamp('approved_at', { withTimezone: true }),
+    approvedBy: uuid('approved_by'),
+    rejectedAt: timestamp('rejected_at', { withTimezone: true }),
+    rejectedBy: uuid('rejected_by'),
+    platformRole: text('platform_role', { enum: ['admin'] }),
+  },
+  (t) => [
+    // Partial unique index: rejected rows keep their email but don't block a
+    // fresh registration with that same address.
+    uniqueIndex('users_email_active')
+      .on(t.email)
+      .where(sql`approval_status <> 'rejected'`),
+    check(
+      'users_approval_status_check',
+      sql`${t.approvalStatus} in ('pending','approved','rejected')`,
+    ),
+    check(
+      'users_platform_role_check',
+      sql`${t.platformRole} is null or ${t.platformRole} in ('admin')`,
+    ),
+  ],
+);
 
 export const sessions = pgTable(
   'sessions',

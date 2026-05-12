@@ -47,16 +47,23 @@ app.post('/signup', rateLimit('signup'), async (c) => {
   const db = getDb();
   const meta = sessionRequestMeta(c);
   try {
-    // Atomic: user + workspace (+member +contexts) + session all commit
-    // together, or none of them do. Prevents the "user without workspace"
-    // orphan state that would otherwise 401 every protected route.
+    // Pending users get a row only — no workspace and no session. They'll
+    // come back through `/login` once a platform admin approves them, and
+    // their workspace is provisioned lazily then (see /login below).
+    //
+    // Approved-on-signup (the platform-admin email) goes through the full
+    // user + workspace + session transaction so the first deploy can boot
+    // straight into the admin queue.
     const result = await db.transaction(async (tx) => {
       const user = await signup(tx, parsed.data);
-      await createWorkspaceForUserTx(tx, { userId: user.id });
-      const { token } = await createSession(tx, { userId: user.id, ...meta });
-      return { user, token };
+      if (user.approvalStatus === 'approved') {
+        await createWorkspaceForUserTx(tx, { userId: user.id });
+        const { token } = await createSession(tx, { userId: user.id, ...meta });
+        return { user, token };
+      }
+      return { user, token: null };
     });
-    setSessionCookie(c, result.token);
+    if (result.token) setSessionCookie(c, result.token);
 
     return c.json(
       {
@@ -64,6 +71,8 @@ app.post('/signup', rateLimit('signup'), async (c) => {
           id: result.user.id,
           email: result.user.email,
           displayName: result.user.displayName,
+          approvalStatus: result.user.approvalStatus,
+          platformRole: result.user.platformRole,
         },
       },
       201,
@@ -97,9 +106,20 @@ app.post('/login', rateLimit('login'), async (c) => {
     return c.json({ error: 'invalid_credentials' }, 401);
   }
 
+  // Block login for accounts that aren't approved yet. We separate the two
+  // signals so the frontend can render different copy: pending users see a
+  // "waiting for admin approval" hint, rejected users see a generic denial.
+  if (user.approvalStatus === 'pending') {
+    return c.json({ error: 'account_pending_approval' }, 403);
+  }
+  if (user.approvalStatus === 'rejected') {
+    // Don't leak that the address ever existed — treat like wrong password.
+    return c.json({ error: 'invalid_credentials' }, 401);
+  }
+
   // Self-heal: if a previous signup wrote the user row but failed before the
-  // workspace tx (e.g. the old neon-http transaction error), the user has no
-  // workspace and every protected route 401s. Make sure they have one now.
+  // workspace tx, or if the user was approved after signup, provision the
+  // workspace lazily now.
   await ensureWorkspaceForUser(db, user.id);
 
   const meta = sessionRequestMeta(c);
@@ -107,7 +127,12 @@ app.post('/login', rateLimit('login'), async (c) => {
   setSessionCookie(c, token);
 
   return c.json({
-    user: { id: user.id, email: user.email, displayName: user.displayName },
+    user: {
+      id: user.id,
+      email: user.email,
+      displayName: user.displayName,
+      platformRole: user.platformRole,
+    },
   });
 });
 
