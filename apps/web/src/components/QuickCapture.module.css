@@ -186,6 +186,14 @@
 .menuItemValue {
   grid-template-columns: 22px minmax(0, 1fr) auto;
 }
+/* Stage-1 record row: shows the /kind glyph alongside the value, so it needs
+ * an extra column for the avatar / bullet next to the glyph. */
+.menuItemRecord {
+  grid-template-columns: 64px 22px minmax(0, 1fr) auto;
+}
+.menuItemRecordPlain {
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+}
 .menuItem:hover,
 .menuItemActive {
   background: var(--paper);
