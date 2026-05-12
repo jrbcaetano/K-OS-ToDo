@@ -3,7 +3,6 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: var(--font-mono);
   color: var(--st-color, var(--ink-4));
 }
 .status::before {

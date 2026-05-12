@@ -1,5 +1,4 @@
 ﻿.chip {
-  font-family: var(--font-mono);
   font-size: 12px;
   color: var(--ink-3);
   font-feature-settings: 'tnum';

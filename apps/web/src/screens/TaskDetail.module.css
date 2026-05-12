@@ -109,7 +109,6 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: var(--font-mono);
 }
 .projChip::before {
   content: 'â–¸';
@@ -318,7 +317,7 @@
   margin-bottom: 4px;
 }
 .commentHead strong {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--ink);
 }
@@ -328,7 +327,7 @@
   font-family: var(--font-mono);
 }
 .commentBody {
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--ink-2);
   line-height: 1.55;
 }
@@ -349,7 +348,7 @@
   background: transparent;
   outline: none;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--ink);
 }
 .commentInput::placeholder {
@@ -373,7 +372,7 @@
   gap: 14px;
   padding: 8px 0;
   border-bottom: 1px solid var(--line-soft);
-  font-size: 12.5px;
+  font-size: 12px;
   align-items: center;
   position: relative;
 }
@@ -395,7 +394,7 @@
 }
 .fieldLabel {
   color: var(--ink-3);
-  font-size: 11.5px;
+  font-size: 12px;
   font-family: var(--font-mono);
 }
 .fieldValue {
@@ -413,16 +412,15 @@
 }
 .muted {
   color: var(--ink-4);
-  font-size: 11.5px;
+  font-size: 12px;
 }
 .sourceText {
   color: var(--ink-3);
-  font-size: 11.5px;
+  font-size: 12px;
   text-transform: capitalize;
 }
 .dateValue {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--ink);
 }
 .personValue {
@@ -445,7 +443,6 @@
   border-radius: 3px;
   font-size: 12px;
   font-weight: 500;
-  font-family: var(--font-mono);
   background: var(--paper-3);
   color: var(--ink-2);
   border: 1px solid var(--line);
@@ -476,7 +473,7 @@
   box-shadow:
     0 12px 28px -10px color-mix(in oklab, var(--ink) 25%, transparent),
     0 4px 10px -4px color-mix(in oklab, var(--ink) 15%, transparent);
-  font-size: 12.5px;
+  font-size: 12px;
   overflow: hidden;
   z-index: 50;
 }
@@ -493,7 +490,7 @@
   border: none;
   padding: 7px 12px;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--ink);
   cursor: pointer;
 }
@@ -523,7 +520,7 @@
   outline: none;
   padding: 9px 12px;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 12px;
   background: transparent;
   border-bottom: 1px solid var(--line-soft);
 }
