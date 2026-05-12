@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WaitingRouteImport } from './routes/waiting'
 import { Route as UpcomingRouteImport } from './routes/upcoming'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InboxRouteImport } from './routes/inbox'
@@ -21,9 +22,12 @@ import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as PeopleIndexRouteImport } from './routes/people/index'
 import { Route as AreasIndexRouteImport } from './routes/areas/index'
 import { Route as TasksIdRouteImport } from './routes/tasks/$id'
+import { Route as SettingsTodosRouteImport } from './routes/settings/todos'
+import { Route as SettingsProfileRouteImport } from './routes/settings/profile'
 import { Route as ProjectsIdRouteImport } from './routes/projects/$id'
 import { Route as PeopleIdRouteImport } from './routes/people/$id'
 import { Route as AreasIdRouteImport } from './routes/areas/$id'
+import { Route as SettingsPlatformApprovalsRouteImport } from './routes/settings/platform.approvals'
 
 const WaitingRoute = WaitingRouteImport.update({
   id: '/waiting',
@@ -38,6 +42,11 @@ const UpcomingRoute = UpcomingRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReviewRoute = ReviewRouteImport.update({
@@ -85,6 +94,16 @@ const TasksIdRoute = TasksIdRouteImport.update({
   path: '/tasks/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsTodosRoute = SettingsTodosRouteImport.update({
+  id: '/todos',
+  path: '/todos',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsProfileRoute = SettingsProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SettingsRoute,
+} as any)
 const ProjectsIdRoute = ProjectsIdRouteImport.update({
   id: '/projects/$id',
   path: '/projects/$id',
@@ -100,6 +119,12 @@ const AreasIdRoute = AreasIdRouteImport.update({
   path: '/areas/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsPlatformApprovalsRoute =
+  SettingsPlatformApprovalsRouteImport.update({
+    id: '/platform/approvals',
+    path: '/platform/approvals',
+    getParentRoute: () => SettingsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -107,16 +132,20 @@ export interface FileRoutesByFullPath {
   '/inbox': typeof InboxRoute
   '/login': typeof LoginRoute
   '/review': typeof ReviewRoute
+  '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
   '/upcoming': typeof UpcomingRoute
   '/waiting': typeof WaitingRoute
   '/areas/$id': typeof AreasIdRoute
   '/people/$id': typeof PeopleIdRoute
   '/projects/$id': typeof ProjectsIdRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/todos': typeof SettingsTodosRoute
   '/tasks/$id': typeof TasksIdRoute
   '/areas/': typeof AreasIndexRoute
   '/people/': typeof PeopleIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/settings/platform/approvals': typeof SettingsPlatformApprovalsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,16 +153,20 @@ export interface FileRoutesByTo {
   '/inbox': typeof InboxRoute
   '/login': typeof LoginRoute
   '/review': typeof ReviewRoute
+  '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
   '/upcoming': typeof UpcomingRoute
   '/waiting': typeof WaitingRoute
   '/areas/$id': typeof AreasIdRoute
   '/people/$id': typeof PeopleIdRoute
   '/projects/$id': typeof ProjectsIdRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/todos': typeof SettingsTodosRoute
   '/tasks/$id': typeof TasksIdRoute
   '/areas': typeof AreasIndexRoute
   '/people': typeof PeopleIndexRoute
   '/projects': typeof ProjectsIndexRoute
+  '/settings/platform/approvals': typeof SettingsPlatformApprovalsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -142,16 +175,20 @@ export interface FileRoutesById {
   '/inbox': typeof InboxRoute
   '/login': typeof LoginRoute
   '/review': typeof ReviewRoute
+  '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
   '/upcoming': typeof UpcomingRoute
   '/waiting': typeof WaitingRoute
   '/areas/$id': typeof AreasIdRoute
   '/people/$id': typeof PeopleIdRoute
   '/projects/$id': typeof ProjectsIdRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/todos': typeof SettingsTodosRoute
   '/tasks/$id': typeof TasksIdRoute
   '/areas/': typeof AreasIndexRoute
   '/people/': typeof PeopleIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/settings/platform/approvals': typeof SettingsPlatformApprovalsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,16 +198,20 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/login'
     | '/review'
+    | '/settings'
     | '/signup'
     | '/upcoming'
     | '/waiting'
     | '/areas/$id'
     | '/people/$id'
     | '/projects/$id'
+    | '/settings/profile'
+    | '/settings/todos'
     | '/tasks/$id'
     | '/areas/'
     | '/people/'
     | '/projects/'
+    | '/settings/platform/approvals'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -178,16 +219,20 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/login'
     | '/review'
+    | '/settings'
     | '/signup'
     | '/upcoming'
     | '/waiting'
     | '/areas/$id'
     | '/people/$id'
     | '/projects/$id'
+    | '/settings/profile'
+    | '/settings/todos'
     | '/tasks/$id'
     | '/areas'
     | '/people'
     | '/projects'
+    | '/settings/platform/approvals'
   id:
     | '__root__'
     | '/'
@@ -195,16 +240,20 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/login'
     | '/review'
+    | '/settings'
     | '/signup'
     | '/upcoming'
     | '/waiting'
     | '/areas/$id'
     | '/people/$id'
     | '/projects/$id'
+    | '/settings/profile'
+    | '/settings/todos'
     | '/tasks/$id'
     | '/areas/'
     | '/people/'
     | '/projects/'
+    | '/settings/platform/approvals'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -213,6 +262,7 @@ export interface RootRouteChildren {
   InboxRoute: typeof InboxRoute
   LoginRoute: typeof LoginRoute
   ReviewRoute: typeof ReviewRoute
+  SettingsRoute: typeof SettingsRouteWithChildren
   SignupRoute: typeof SignupRoute
   UpcomingRoute: typeof UpcomingRoute
   WaitingRoute: typeof WaitingRoute
@@ -246,6 +296,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/review': {
@@ -311,6 +368,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TasksIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings/todos': {
+      id: '/settings/todos'
+      path: '/todos'
+      fullPath: '/settings/todos'
+      preLoaderRoute: typeof SettingsTodosRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/profile': {
+      id: '/settings/profile'
+      path: '/profile'
+      fullPath: '/settings/profile'
+      preLoaderRoute: typeof SettingsProfileRouteImport
+      parentRoute: typeof SettingsRoute
+    }
     '/projects/$id': {
       id: '/projects/$id'
       path: '/projects/$id'
@@ -332,8 +403,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AreasIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings/platform/approvals': {
+      id: '/settings/platform/approvals'
+      path: '/platform/approvals'
+      fullPath: '/settings/platform/approvals'
+      preLoaderRoute: typeof SettingsPlatformApprovalsRouteImport
+      parentRoute: typeof SettingsRoute
+    }
   }
 }
+
+interface SettingsRouteChildren {
+  SettingsProfileRoute: typeof SettingsProfileRoute
+  SettingsTodosRoute: typeof SettingsTodosRoute
+  SettingsPlatformApprovalsRoute: typeof SettingsPlatformApprovalsRoute
+}
+
+const SettingsRouteChildren: SettingsRouteChildren = {
+  SettingsProfileRoute: SettingsProfileRoute,
+  SettingsTodosRoute: SettingsTodosRoute,
+  SettingsPlatformApprovalsRoute: SettingsPlatformApprovalsRoute,
+}
+
+const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
+  SettingsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -341,6 +435,7 @@ const rootRouteChildren: RootRouteChildren = {
   InboxRoute: InboxRoute,
   LoginRoute: LoginRoute,
   ReviewRoute: ReviewRoute,
+  SettingsRoute: SettingsRouteWithChildren,
   SignupRoute: SignupRoute,
   UpcomingRoute: UpcomingRoute,
   WaitingRoute: WaitingRoute,

@@ -253,6 +253,48 @@ textarea {
   display: inline-flex;
 }
 
+/* Footer user-card trigger — the sidebar footer's avatar+name button that
+ * opens the user menu popover. Replaces the static user info layout. */
+.kos-user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  padding: 4px 6px;
+  margin: -4px -6px;
+  border-radius: var(--radius);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+}
+.kos-user-trigger:hover {
+  background: var(--paper-3);
+}
+.kos-user-trigger-info {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.2;
+}
+.kos-user-trigger-name {
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kos-user-trigger-meta {
+  color: var(--ink-3);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Filter chip — used in the filter bar on list screens. */
 .kos-filter-chip {
   display: inline-flex;

@@ -41,6 +41,12 @@ export interface SidebarProps {
   topSlot?: React.ReactNode;
   /** Slot at the right end of the footer (e.g. settings icon). */
   footerSlot?: React.ReactNode;
+  /**
+   * Override the avatar + name + meta block in the footer. Lets the host
+   * wrap the user card in a popover trigger / link without lifting the
+   * Avatar import into this package. The default uses `user`.
+   */
+  renderUserCard?: (user: SidebarUser) => React.ReactNode;
 }
 
 export interface SidebarItemRenderProps {
@@ -59,6 +65,7 @@ export function Sidebar({
   versionLabel,
   topSlot,
   footerSlot,
+  renderUserCard,
 }: SidebarProps) {
   const disabledSet = disabledIds ? new Set(disabledIds) : null;
   return (
@@ -119,17 +126,20 @@ export function Sidebar({
 
       {user && (
         <div className={styles.footer}>
-          <Avatar
-            person={{
-              initials: user.initials,
-              color: user.color ?? null,
-            }}
-            size={22}
-          />
-          <div className={styles.footerInfo}>
-            <div className={styles.footerName}>{user.name}</div>
-            {user.meta && <div className={styles.footerMeta}>{user.meta}</div>}
-          </div>
+          {renderUserCard ? (
+            renderUserCard(user)
+          ) : (
+            <>
+              <Avatar
+                person={{ initials: user.initials, color: user.color ?? null }}
+                size={22}
+              />
+              <div className={styles.footerInfo}>
+                <div className={styles.footerName}>{user.name}</div>
+                {user.meta && <div className={styles.footerMeta}>{user.meta}</div>}
+              </div>
+            </>
+          )}
           {footerSlot}
         </div>
       )}

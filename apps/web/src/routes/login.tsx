@@ -28,7 +28,15 @@ function LoginScreen() {
       await qc.invalidateQueries({ queryKey: ['session'] });
       await navigate({ to: '/' });
     } catch (err) {
-      if (err instanceof ApiError && err.status === 401) {
+      const errCode =
+        err instanceof ApiError && err.body && typeof err.body === 'object' && 'error' in err.body
+          ? (err.body as { error: string }).error
+          : null;
+      if (err instanceof ApiError && err.status === 403 && errCode === 'account_pending_approval') {
+        setError(
+          'Your account is awaiting approval. We’ll let you in once a platform admin reviews it.',
+        );
+      } else if (err instanceof ApiError && err.status === 401) {
         setError('That email and password don’t match.');
       } else if (err instanceof ApiError && err.status === 429) {
         setError('Too many attempts. Try again in a few minutes.');

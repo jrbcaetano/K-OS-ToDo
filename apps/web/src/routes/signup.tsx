@@ -19,6 +19,7 @@ function SignupScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [pending, setPending] = useState(false);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -31,11 +32,17 @@ function SignupScreen() {
 
     setSubmitting(true);
     try {
-      await signup({
+      const result = await signup({
         email: email.trim(),
         password,
         displayName: displayName.trim(),
       });
+      if (result.user.approvalStatus && result.user.approvalStatus !== 'approved') {
+        // Pending users don't get a session — show a confirmation panel
+        // and stay on the signup screen.
+        setPending(true);
+        return;
+      }
       await qc.invalidateQueries({ queryKey: ['session'] });
       await navigate({ to: '/' });
     } catch (err) {
@@ -60,6 +67,30 @@ function SignupScreen() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (pending) {
+    return (
+      <div className={styles.shell}>
+        <div className={styles.card}>
+          <div className={styles.brand}>
+            <span className={styles.brandMark}>K-OS</span>
+            <span className={styles.brandTagline}>Personal Operating System</span>
+          </div>
+          <div>
+            <h1 className={styles.title}>Account created — pending review</h1>
+            <p className={styles.subtitle}>
+              Thanks for signing up. A platform admin needs to approve new
+              accounts before they can sign in. We’ll let you know as soon as
+              that happens; in the meantime there’s nothing more to do here.
+            </p>
+          </div>
+          <div className={styles.alt}>
+            Already approved? <Link to="/login">Sign in</Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

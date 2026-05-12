@@ -1,0 +1,100 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.sub {
+  font-size: 13px;
+  color: var(--ink-3);
+  margin: 0;
+  max-width: 56ch;
+  line-height: 1.5;
+}
+
+.empty {
+  padding: 32px 0;
+  font-size: 13px;
+  color: var(--ink-3);
+  text-align: center;
+  background: var(--paper-2);
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.table thead th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.table tbody td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--ink);
+  vertical-align: middle;
+}
+.dateCell {
+  color: var(--ink-3);
+  white-space: nowrap;
+  width: 1px;
+}
+.emailCell {
+  color: var(--ink-2);
+}
+.actionsCell {
+  text-align: right;
+  white-space: nowrap;
+  width: 1px;
+}
+.actionsCell .btn + .btn {
+  margin-left: 6px;
+}
+
+.btn {
+  font: inherit;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btnApprove {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btnApprove:hover:not(:disabled) {
+  background: var(--ink-2);
+}
+.btnReject {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--pri-critical);
+}
+.btnReject:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--pri-critical) 8%, var(--paper));
+}

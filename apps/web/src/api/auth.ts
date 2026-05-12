@@ -12,6 +12,10 @@ export interface AuthUser {
   id: string;
   email: string;
   displayName: string;
+  /** Null for regular users; 'admin' grants access to Platform Settings. */
+  platformRole?: 'admin' | null;
+  /** Set on signup responses for accounts that landed in the approval queue. */
+  approvalStatus?: 'pending' | 'approved' | 'rejected';
 }
 
 export interface AuthWorkspace {
@@ -38,8 +42,12 @@ export interface LoginInput {
 
 export const getSession = () => apiGet<SessionResponse>('/auth/session');
 
+export interface SignupResponse {
+  user: AuthUser;
+}
+
 export const signup = (data: SignupInput) =>
-  apiSend<{ user: AuthUser }>('POST', '/auth/password/signup', data);
+  apiSend<SignupResponse>('POST', '/auth/password/signup', data);
 
 export const login = (data: LoginInput) =>
   apiSend<{ user: AuthUser }>('POST', '/auth/password/login', data);

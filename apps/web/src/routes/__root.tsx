@@ -9,6 +9,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import {
   AppShell,
+  Avatar,
   MobileShell,
   Sidebar,
   TweaksPanel,
@@ -20,6 +21,7 @@ import {
 } from '@k-os/ui';
 import { NAV_GROUPS, type NavItem } from '@k-os/core';
 import { QuickCapture } from '../components/QuickCapture';
+import { UserMenu } from '../components/UserMenu';
 import { logout, type AuthUser, type AuthWorkspace } from '../api/auth';
 import { useSession } from '../api/auth-hooks';
 import { useCounts } from '../api/tasks';
@@ -274,17 +276,24 @@ function RootLayout() {
             user={userMeta}
             versionLabel="v0.4"
             topSlot={sidebarTop}
-            footerSlot={
-              <button
-                type="button"
-                className="kos-icon-btn"
-                aria-label="Sign out"
-                title="Sign out"
-                onClick={handleLogout}
-              >
-                <Icon name="settings" size={13} />
-              </button>
-            }
+            renderUserCard={(u) => (
+              <UserMenu
+                user={{ displayName: u.name, platformRole: user.platformRole ?? null }}
+                onSignOut={handleLogout}
+                trigger={
+                  <button type="button" className="kos-user-trigger" aria-label="Open user menu">
+                    <Avatar
+                      person={{ initials: u.initials, color: u.color ?? null }}
+                      size={22}
+                    />
+                    <div className="kos-user-trigger-info">
+                      <div className="kos-user-trigger-name">{u.name}</div>
+                      {u.meta && <div className="kos-user-trigger-meta">{u.meta}</div>}
+                    </div>
+                  </button>
+                }
+              />
+            )}
           />
         }
         title={title}
