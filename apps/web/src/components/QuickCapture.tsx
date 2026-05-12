@@ -530,24 +530,28 @@ function RowView({
   onMouseEnter: () => void;
   onMouseDown: (e: React.MouseEvent) => void;
 }) {
-  // Decide the row's grid template:
-  // - kind row → wide first column for the `/<kind>` glyph
-  // - stage-2 value row → 22px gutter for the avatar/bullet
-  // - stage-1 record row WITH an avatar/bullet → glyph + avatar + label + sub
-  //   (4 columns)
-  // - stage-1 record row WITHOUT an avatar/bullet (status/priority/timeline)
-  //   → glyph + label + sub (3 columns)
-  const hasOrnament =
-    row.variant === 'value' &&
-    (row.kind === 'person' || row.kind === 'project' || row.kind === 'area' || row.kind === 'context');
-
+  // Pick the grid template based on whether the row needs space for the
+  // `/<kind>` glyph (only stage-1 cross-record rows do).
   let variantClass = styles.menuItemValue;
   if (row.variant === 'kind') variantClass = styles.menuItemKind;
-  else if (showKindGlyph) variantClass = hasOrnament ? styles.menuItemRecord : styles.menuItemRecordPlain;
+  else if (showKindGlyph) variantClass = styles.menuItemRecord;
 
   const cls = [styles.menuItem, variantClass, active ? styles.menuItemActive : '']
     .filter(Boolean)
     .join(' ');
+
+  // The ornament cell is always rendered for value rows so the grid keeps
+  // three (or four, when the kind glyph is shown) consistently-aligned
+  // columns. Person rows get an avatar; everything else gets a small
+  // kind-coloured bullet.
+  const ornament =
+    row.variant === 'value'
+      ? row.kind === 'person' && row.initials ? (
+          <span className={styles.menuAvatar} style={{ background: row.color }}>{row.initials}</span>
+        ) : (
+          <span className={styles.menuBullet} style={{ background: KIND_BY_ID[row.kind].dot }} />
+        )
+      : null;
 
   return (
     <div className={cls} role="option" aria-selected={active} onMouseEnter={onMouseEnter} onMouseDown={onMouseDown}>
@@ -560,13 +564,7 @@ function RowView({
       ) : (
         <>
           {showKindGlyph && <span className={styles.menuGlyph}>/{row.kind}</span>}
-          {hasOrnament && (
-            row.kind === 'person' && row.initials ? (
-              <span className={styles.menuAvatar} style={{ background: row.color }}>{row.initials}</span>
-            ) : (
-              <span className={styles.menuBullet} style={{ background: KIND_BY_ID[row.kind].dot }} />
-            )
-          )}
+          {ornament}
           <span className={styles.menuLabel}>{row.label}</span>
           {row.sub && <span className={styles.menuSub}>{row.sub}</span>}
         </>

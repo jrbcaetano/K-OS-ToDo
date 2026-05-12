@@ -191,9 +191,6 @@
 .menuItemRecord {
   grid-template-columns: 64px 22px minmax(0, 1fr) auto;
 }
-.menuItemRecordPlain {
-  grid-template-columns: 64px minmax(0, 1fr) auto;
-}
 .menuItem:hover,
 .menuItemActive {
   background: var(--paper);
