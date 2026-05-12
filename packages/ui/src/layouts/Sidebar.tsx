@@ -27,6 +27,8 @@ export interface SidebarProps {
   counts?: Record<string, number | undefined>;
   /** Per-item alert label, keyed by id (e.g. "2"). */
   alerts?: Record<string, string | undefined>;
+  /** Item ids that should render with a muted, non-interactive appearance. */
+  disabledIds?: readonly string[];
   /**
    * Render a single item's outer element. The host returns a `<Link>` /
    * `<a>` / `<button>` of its choice. Children are pre-built (icon + name
@@ -51,12 +53,14 @@ export function Sidebar({
   activeId,
   counts,
   alerts,
+  disabledIds,
   renderItem,
   user,
   versionLabel,
   topSlot,
   footerSlot,
 }: SidebarProps) {
+  const disabledSet = disabledIds ? new Set(disabledIds) : null;
   return (
     <aside className={styles.sidebar} aria-label="Primary navigation">
       <div className={styles.brand}>
@@ -72,7 +76,14 @@ export function Sidebar({
           <div className={styles.sectionLabel}>{group.group}</div>
           {group.items.map((item) => {
             const active = item.id === activeId;
-            const className = `${styles.item} ${active ? styles.itemActive : ''}`;
+            const disabled = disabledSet?.has(item.id) ?? false;
+            const className = [
+              styles.item,
+              active ? styles.itemActive : '',
+              disabled ? styles.itemDisabled : '',
+            ]
+              .filter(Boolean)
+              .join(' ');
             const count = counts?.[item.id];
             const alert = alerts?.[item.id];
             return (

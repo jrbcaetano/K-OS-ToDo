@@ -134,6 +134,9 @@ function RootLayout() {
     today: counts && counts.todayOverdue > 0 ? String(counts.todayOverdue) : undefined,
     waiting: counts && counts.waitingStale > 0 ? String(counts.waitingStale) : undefined,
   };
+  // Inbox is the only nav item we visually disable when empty — the rest are
+  // pages the user might still want to open (e.g. People with zero contacts).
+  const disabledNavIds = counts && counts.inbox === 0 ? ['inbox'] : [];
 
   // Redirect handling.
   useEffect(() => {
@@ -266,6 +269,7 @@ function RootLayout() {
             activeId={activeId}
             counts={navCounts}
             alerts={navAlerts}
+            disabledIds={disabledNavIds}
             renderItem={renderItem}
             user={userMeta}
             versionLabel="v0.4"

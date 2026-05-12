@@ -88,6 +88,16 @@
   background: var(--paper-3);
   color: var(--ink);
 }
+.itemDisabled,
+.itemDisabled:hover {
+  color: var(--ink-4);
+  background: transparent;
+  cursor: default;
+  pointer-events: none;
+}
+.itemDisabled .icon {
+  opacity: 0.45;
+}
 .itemActive::before {
   content: '';
   position: absolute;
