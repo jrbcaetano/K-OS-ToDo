@@ -23,6 +23,24 @@ export interface CaptureInput {
   description?: string | null;
   sourceKind?: string | null;
   sourceRef?: string | null;
+  // Structured attachments from the quick-capture slash menu. When `status` is
+  // not `inbox`, the task lands directly in that status (skipping triage).
+  status?:
+    | 'inbox'
+    | 'next'
+    | 'scheduled'
+    | 'waiting'
+    | 'delegated'
+    | 'blocked'
+    | 'someday'
+    | 'done';
+  priority?: 'critical' | 'important' | 'routine' | 'low';
+  contextId?: string | null;
+  projectId?: string | null;
+  areaId?: string | null;
+  personId?: string | null;
+  dueAt?: string | null;
+  scheduledAt?: string | null;
 }
 
 export function useCapture() {
@@ -33,6 +51,9 @@ export function useCapture() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['inbox'] });
       qc.invalidateQueries({ queryKey: ['tasks'] });
+      qc.invalidateQueries({ queryKey: ['today'] });
+      qc.invalidateQueries({ queryKey: ['upcoming'] });
+      qc.invalidateQueries({ queryKey: ['waiting'] });
     },
   });
 }

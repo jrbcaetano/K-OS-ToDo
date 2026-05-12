@@ -16,7 +16,7 @@ import { Hono } from 'hono';
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { tasks, taskEvents, getDb } from '@k-os/db';
-import { TASK_STATUSES, SOURCE_KINDS } from '@k-os/core';
+import { TASK_STATUSES, TASK_PRIORITIES, SOURCE_KINDS } from '@k-os/core';
 import {
   actorEventStamp,
   actorUserId,
@@ -38,6 +38,17 @@ const captureSchema = z.object({
   description: z.string().max(20_000).nullable().optional(),
   sourceKind: z.enum(SOURCE_KINDS).nullable().optional(),
   sourceRef: z.string().max(500).nullable().optional(),
+  // Optional structured attachments selected via the quick-capture slash menu.
+  // When `status` is provided and not `inbox`, the task is created directly in
+  // that status (the capture flow doubles as a one-shot triage).
+  status: z.enum(TASK_STATUSES).optional(),
+  priority: z.enum(TASK_PRIORITIES).optional(),
+  contextId: z.string().uuid().nullable().optional(),
+  projectId: z.string().uuid().nullable().optional(),
+  areaId: z.string().uuid().nullable().optional(),
+  personId: z.string().uuid().nullable().optional(),
+  dueAt: z.string().datetime().nullable().optional(),
+  scheduledAt: z.string().datetime().nullable().optional(),
 });
 
 const triageSchema = z.object({
@@ -84,17 +95,27 @@ app.post('/capture', async (c) => {
   // observes the new inbox row (via list / webhooks / polling) and PATCHes
   // its parse result back through the public API.
 
+  const d = parsed.data;
+  const status = d.status ?? 'inbox';
+  const priority = d.priority ?? 'routine';
+
   const task = await db.transaction(async (tx) => {
     const [row] = await tx
       .insert(tasks)
       .values({
         workspaceId,
-        title: parsed.data.title.trim(),
-        description: parsed.data.description ?? null,
-        status: 'inbox',
-        priority: 'routine',
-        sourceKind: parsed.data.sourceKind ?? 'manual',
-        sourceRef: parsed.data.sourceRef ?? null,
+        title: d.title.trim(),
+        description: d.description ?? null,
+        status,
+        priority,
+        contextId: d.contextId ?? null,
+        projectId: d.projectId ?? null,
+        areaId: d.areaId ?? null,
+        personId: d.personId ?? null,
+        dueAt: d.dueAt ? new Date(d.dueAt) : null,
+        scheduledAt: d.scheduledAt ? new Date(d.scheduledAt) : null,
+        sourceKind: d.sourceKind ?? 'manual',
+        sourceRef: d.sourceRef ?? null,
         ownerId: userId,
         createdBy: userId,
       })
@@ -104,7 +125,7 @@ app.post('/capture', async (c) => {
       taskId: row.id,
       kind: 'created',
       actor,
-      payload: { source: 'inbox_capture' },
+      payload: { source: 'inbox_capture', status },
     });
     return row;
   });
