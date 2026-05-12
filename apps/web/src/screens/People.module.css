@@ -1,4 +1,4 @@
-.split {
+﻿.split {
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: 16px;
@@ -44,12 +44,12 @@
   display: block;
 }
 .rowName span {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-3);
 }
 .rowCount {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-4);
 }
 .detail {
@@ -84,7 +84,7 @@
   min-width: 110px;
 }
 .kpiLabel {
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--ink-3);
   text-transform: uppercase;
   letter-spacing: 0.06em;

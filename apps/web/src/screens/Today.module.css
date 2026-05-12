@@ -1,11 +1,11 @@
-.greeting {
+﻿.greeting {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   margin-bottom: 18px;
 }
 .dateline {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-3);
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
@@ -24,7 +24,7 @@
   margin-top: 4px;
 }
 
-/* KPI grid — one visual unit with 1px hairlines between cells. */
+/* KPI grid â€” one visual unit with 1px hairlines between cells. */
 .kpiGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -43,7 +43,7 @@
   gap: 4px;
 }
 .kpiLabel {
-  font-size: 10.5px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-3);
@@ -61,7 +61,7 @@
   color: var(--pri-critical);
 }
 .kpiMeta {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-3);
   font-family: var(--font-mono);
 }

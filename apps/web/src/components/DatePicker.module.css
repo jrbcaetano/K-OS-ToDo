@@ -1,11 +1,11 @@
-/* Calendar / Date picker popover — mirrors the prototype's .pop-* classes. */
+﻿/* Calendar / Date picker popover â€” mirrors the prototype's .pop-* classes. */
 
 .head {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  font-size: 10.5px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-3);
@@ -36,7 +36,7 @@
   border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--paper);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-2);
   cursor: pointer;
   font-family: inherit;

@@ -1,4 +1,4 @@
-.overlay {
+﻿.overlay {
   position: fixed;
   inset: 0;
   background: rgba(20, 20, 20, 0.32);
@@ -29,7 +29,7 @@
   border-bottom: 1px solid var(--line-soft);
 }
 .headLabel {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-3);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -37,7 +37,7 @@
 }
 .headHint {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-4);
 }
 
@@ -80,13 +80,13 @@
 .chipPrefix {
   font-family: var(--font-mono);
   color: var(--ink-4);
-  font-size: 10.5px;
+  font-size: 12px;
   margin-right: -2px;
 }
 .chipHint {
   color: var(--ink-4);
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 12px;
 }
 .chipX {
   width: 16px;
@@ -149,7 +149,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 18px 6px;
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--ink-3);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -160,7 +160,7 @@
   text-transform: none;
   letter-spacing: 0.02em;
   color: var(--ink-4);
-  font-size: 10.5px;
+  font-size: 12px;
 }
 .menuList {
   padding: 2px 8px 8px;
@@ -198,7 +198,7 @@
 }
 .menuGlyph {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--ink-3);
 }
 .menuAvatar {
@@ -228,7 +228,7 @@
 }
 .menuSub {
   color: var(--ink-3);
-  font-size: 11px;
+  font-size: 12px;
   max-width: 320px;
   white-space: nowrap;
   overflow: hidden;
@@ -244,7 +244,7 @@
   gap: 12px;
   border-top: 1px solid var(--line-soft);
   padding: 10px 16px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-3);
   font-family: var(--font-mono);
   background: var(--paper-2);
@@ -262,7 +262,7 @@
 }
 .footerSummary {
   color: var(--ink-3);
-  font-size: 11px;
+  font-size: 12px;
 }
 .saveBtn {
   height: 26px;

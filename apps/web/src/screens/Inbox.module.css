@@ -1,4 +1,4 @@
-/* ------------------------------------------------------------------ */
+﻿/* ------------------------------------------------------------------ */
 /* Header                                                              */
 /* ------------------------------------------------------------------ */
 
@@ -47,7 +47,7 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Row — every inbox item                                              */
+/* Row â€” every inbox item                                              */
 /*                                                                      */
 /* The row is always rendered with the same summary line on top. When  */
 /* focused it adds a card background, a left accent rail, and reveals  */
@@ -79,7 +79,7 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Summary line — always visible                                       */
+/* Summary line â€” always visible                                       */
 /* ------------------------------------------------------------------ */
 
 .summary {
@@ -130,7 +130,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-3);
   font-family: var(--font-mono);
 }
@@ -139,7 +139,7 @@
 }
 .summaryCounter {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-4);
 }
 .cardSep {
@@ -147,7 +147,7 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Expansion — height-animated via grid-template-rows                  */
+/* Expansion â€” height-animated via grid-template-rows                  */
 /*                                                                      */
 /* CSS grid recently learned to interpolate between `0fr` and `1fr`,   */
 /* which lets us animate a container's intrinsic height without ever   */
@@ -207,7 +207,7 @@
   align-items: center;
 }
 .suggestedLabel {
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--ink-3);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -222,7 +222,7 @@
   height: 24px;
   padding: 0 9px;
   border-radius: 12px;
-  font-size: 11px;
+  font-size: 12px;
   background: var(--paper);
   border: 1px solid var(--line);
   color: var(--ink-2);
@@ -289,7 +289,7 @@
 }
 .chipOptionSub {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-4);
   margin-top: 1px;
 }

@@ -1,4 +1,4 @@
-.app {
+﻿.app {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -51,7 +51,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--ink-3);
   cursor: pointer;
   background: transparent;

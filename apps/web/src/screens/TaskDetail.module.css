@@ -1,4 +1,4 @@
-.shell {
+﻿.shell {
   max-width: 1000px;
   margin: 0 auto;
   padding: 0;
@@ -104,7 +104,7 @@
 }
 
 .projChip {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-3);
   display: inline-flex;
   align-items: center;
@@ -112,7 +112,7 @@
   font-family: var(--font-mono);
 }
 .projChip::before {
-  content: '▸';
+  content: 'â–¸';
   color: var(--ink-4);
   font-size: 9px;
 }
@@ -155,7 +155,7 @@
 /* ------------------------------------------------------------------ */
 
 .sectionLabel {
-  font-size: 10.5px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-3);
@@ -230,7 +230,7 @@
 }
 .descEditFoot {
   padding: 6px 4px 0 4px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-4);
 }
 
@@ -274,12 +274,12 @@
 }
 .activityTime {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--ink-4);
 }
 .activityFoot {
   padding: 6px 0 14px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-4);
   font-family: var(--font-mono);
   display: flex;
@@ -324,7 +324,7 @@
 }
 .commentTime {
   color: var(--ink-4);
-  font-size: 11px;
+  font-size: 12px;
   font-family: var(--font-mono);
 }
 .commentBody {
@@ -357,7 +357,7 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Right rail — field card                                             */
+/* Right rail â€” field card                                             */
 /* ------------------------------------------------------------------ */
 
 .card {
@@ -443,7 +443,7 @@
   height: 18px;
   padding: 0 7px;
   border-radius: 3px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 500;
   font-family: var(--font-mono);
   background: var(--paper-3);
@@ -503,7 +503,7 @@
 }
 .pickerSub {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-4);
   margin-top: 1px;
 }

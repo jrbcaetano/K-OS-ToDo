@@ -1,11 +1,11 @@
-.badge {
+﻿.badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   height: 18px;
   padding: 0 7px;
   border-radius: 3px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 500;
   font-family: var(--font-mono);
   font-feature-settings: 'tnum';

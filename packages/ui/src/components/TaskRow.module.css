@@ -1,4 +1,4 @@
-.row {
+﻿.row {
   display: grid;
   grid-template-columns: 18px 1fr auto;
   align-items: center;
@@ -78,7 +78,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-3);
   font-family: var(--font-mono);
   font-feature-settings: 'tnum';
@@ -99,7 +99,7 @@
   transition: opacity 0.1s;
 }
 .projChip {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--ink-3);
   display: inline-flex;
   align-items: center;
@@ -107,7 +107,7 @@
   font-family: var(--font-mono);
 }
 .projChip::before {
-  content: '▸';
+  content: 'â–¸';
   color: var(--ink-4);
   font-size: 9px;
 }
